@@ -1,0 +1,19 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: example-hpa-custom-metrics
+spec:
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: External
+    external:
+      metricName: my-external-metric
+      metricSelector:
+        matchLabels:
+          k8s-app: wavefront-proxy
+      targetAverageValue: 1800m
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: wavefront-proxy

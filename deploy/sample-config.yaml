@@ -1,0 +1,4 @@
+rules:
+
+- query: 'ts(azure.compute.vm.percentage.cpu)'
+  name: azure.vm.cpu

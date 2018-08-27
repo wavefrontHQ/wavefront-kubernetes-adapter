@@ -27,7 +27,6 @@ notifications:
 
 # script always run to completion (set +e).
 script:
-  - go get -t -v ./...
   - diff -u <(echo -n) <(gofmt -d .)
   - go test -v -race ./...                   # Run all the tests with the race detector enabled
   - go vet -composites=false ./...           # go vet is the official Go static analyzer

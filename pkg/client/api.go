@@ -107,7 +107,7 @@ func (w DefaultWavefrontClient) Query(ts int64, query string) (QueryResult, erro
 	vals := url.Values{}
 	vals.Set(queryKey, query)
 	vals.Set(startTime, strconv.FormatInt(ts, 10))
-	vals.Set(granularity, "d")
+	vals.Set(granularity, "m")
 
 	resp, err := w.Do("GET", chartEndpoint, vals)
 	if err != nil {

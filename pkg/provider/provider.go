@@ -182,17 +182,17 @@ func (p *wavefrontProvider) GetExternalMetric(namespace string, metricSelector l
 	glog.V(5).Info("DEBUG:---GetExternalMetric", namespace, metricSelector, info)
 
 	if p.externalDriver == nil {
-		return nil, fmt.Errorf("missing external driver for external metric: %s", info.Metric)
+		return nil, apierr.NewInternalError(fmt.Errorf("missing external driver for external metric: %s", info.Metric))
 	}
 
 	query := p.externalDriver.getQuery(info.Metric)
 	if query == "" {
-		return nil, fmt.Errorf("missing query for external metric: %s", info.Metric)
+		return nil, apierr.NewInternalError(fmt.Errorf("missing query for external metric: %s", info.Metric))
 	}
 
 	queryResult, err := p.doQuery(query)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching metrics for external metric: %s error=%v", info.Metric, err)
+		return nil, apierr.NewInternalError(fmt.Errorf("error fetching metrics for external metric: %s error=%v", info.Metric, err))
 	}
 	return p.ExternalValuesFor(queryResult, info.Metric)
 }

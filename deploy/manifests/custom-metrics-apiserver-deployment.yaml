@@ -20,7 +20,7 @@ spec:
       containers:
       - name: custom-metrics-apiserver
         imagePullPolicy: Always
-        image: vikramraman/wavefront-adapter:latest
+        image: wavefronthq/wavefront-adapter:latest
         args:
         - /wavefront-adapter
         - --wavefront-url=https://<INSTANCE>.wavefront.com

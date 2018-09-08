@@ -1,0 +1,19 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: example-hpa-custom-metrics
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: wavefront-proxy
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Object
+    object:
+      target:
+        kind: Node
+        name: gke-cluster-default-pool-f63db08a-xrdh
+      metricName: cpu.usage_rate
+      targetValue: 2000m

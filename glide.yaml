@@ -1,0 +1,41 @@
+package: github.com/wavefronthq/wavefront-kubernetes-adapter
+import:
+- package: github.com/golang/glog
+  version: 44145f04b68cf362d9c4df2182967c2275eaefed
+- package: github.com/kubernetes-incubator/custom-metrics-apiserver
+  version: 81ff8bee362be0eff348255a15432ae67817bfd9
+  subpackages:
+  - pkg/cmd/server
+  - pkg/dynamicmapper
+  - pkg/provider
+  - pkg/sample-cmd/provider
+  - pkg/sample-cmd/server
+- package: github.com/spf13/cobra
+  version: c439c4fa093711d42e1b01acb1235b52004753c1
+- package: k8s.io/apimachinery
+  version: kubernetes-1.11.0-rc.1
+  subpackages:
+  - pkg/api/errors
+  - pkg/api/meta
+  - pkg/api/resource
+  - pkg/apis/meta/v1
+  - pkg/labels
+  - pkg/runtime
+  - pkg/runtime/schema
+  - pkg/util/wait
+- package: k8s.io/apiserver
+  version: kubernetes-1.11.0-rc.1
+  subpackages:
+  - pkg/util/logs
+- package: k8s.io/client-go
+  version: kubernetes-1.11.0-rc.1
+  subpackages:
+  - discovery
+  - dynamic
+  - rest
+  - tools/clientcmd
+- package: k8s.io/metrics
+  version: kubernetes-1.11.0-rc.1
+  subpackages:
+  - pkg/apis/custom_metrics
+  - pkg/apis/external_metrics

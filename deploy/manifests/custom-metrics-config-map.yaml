@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adapter-config
+  namespace: custom-metrics
+data:
+  config.yaml: |
+    rules:
+    - query: 'ts(azure.compute.vm.percentage.cpu)'
+      name: azure.vm.cpu
+    - query: 'ts(aws.sqs.approximatenumberofmessagesvisible)'
+      name: aws.sqs.messagesvisible

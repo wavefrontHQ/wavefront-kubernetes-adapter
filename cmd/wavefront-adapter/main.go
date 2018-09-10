@@ -31,7 +31,6 @@ import (
 	customprovider "github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
 
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
-	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/config"
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/provider"
 )
 
@@ -63,21 +62,13 @@ func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
 		glog.Fatalf("unable to construct discovery REST mapper: %v", err)
 	}
 
-	var metricsConfig *config.ExternalMetricsConfig
-	if a.AdapterConfigFile != "" {
-		metricsConfig, err = config.FromFile(a.AdapterConfigFile)
-		if err != nil {
-			glog.Fatalf("unable to load metrics discovery configuration: %v", err)
-		}
-	}
-
 	waveURL, err := url.Parse(a.WavefrontServerURL)
 	if err != nil {
 		glog.Fatalf("unable to parse wavefront url: %v", err)
 	}
 	waveClient := client.NewWavefrontClient(waveURL, a.WavefrontAPIToken)
 
-	metricsProvider, runnable := provider.NewWavefrontProvider(dynClient, mapper, waveClient, a.CustomMetricPrefix, a.MetricsRelistInterval, metricsConfig)
+	metricsProvider, runnable := provider.NewWavefrontProvider(dynClient, mapper, waveClient, a.CustomMetricPrefix, a.MetricsRelistInterval, a.AdapterConfigFile)
 	runnable.RunUntil(wait.NeverStop)
 	return metricsProvider
 }

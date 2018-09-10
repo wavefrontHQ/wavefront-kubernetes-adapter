@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/config"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"strings"
@@ -67,9 +66,9 @@ func getGroupVersionResource(name string) schema.GroupVersionResource {
 
 type fakeExternalDriver struct{}
 
-func (d *fakeExternalDriver) loadRules(rules *config.ExternalMetricsConfig) {
+func (d *fakeExternalDriver) loadConfig() {}
 
-}
+func (d *fakeExternalDriver) registerListener(listener ExternalConfigListener) {}
 
 func (d *fakeExternalDriver) getMetricNames() []string {
 	result := make([]string, 0)

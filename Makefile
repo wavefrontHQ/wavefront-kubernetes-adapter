@@ -2,7 +2,7 @@ ARCH?=amd64
 OUT_DIR?=./_output
 TEMP_DIR:=$(shell mktemp -d)
 DOCKER_REPO=wavefronthq
-DOCKER_IMAGE=wavefront-adapter
+DOCKER_IMAGE=wavefront-hpa-adapter
 VERSION=0.9
 
 .PHONY: all test verify-gofmt gofmt verify

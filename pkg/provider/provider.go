@@ -19,7 +19,6 @@ import (
 	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider/helpers"
 
 	wave "github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
-	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/config"
 )
 
 type wavefrontProvider struct {
@@ -33,7 +32,7 @@ type wavefrontProvider struct {
 }
 
 func NewWavefrontProvider(client dynamic.Interface, mapper apimeta.RESTMapper, waveClient wave.WavefrontClient,
-	prefix string, listInterval time.Duration, externalMetricsCfg *config.ExternalMetricsConfig) (provider.MetricsProvider, MetricsLister) {
+	prefix string, listInterval time.Duration, externalMetricsCfg string) (provider.MetricsProvider, MetricsLister) {
 
 	glog.Infof("wavefrontProvider prefix: %s, listInterval: %d", prefix, listInterval)
 
@@ -42,9 +41,9 @@ func NewWavefrontProvider(client dynamic.Interface, mapper apimeta.RESTMapper, w
 	}
 
 	var externalDriver ExternalMetricsDriver = nil
-	if externalMetricsCfg != nil {
-		externalDriver = &WavefrontExternalDriver{}
-		externalDriver.loadRules(externalMetricsCfg)
+	if externalMetricsCfg != "" {
+		externalDriver = &WavefrontExternalDriver{cfgFile: externalMetricsCfg}
+		externalDriver.loadConfig()
 	}
 
 	lister := &WavefrontMetricsLister{

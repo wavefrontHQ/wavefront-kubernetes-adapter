@@ -20,6 +20,10 @@ type MetricsLister interface {
 	ListExternalMetrics() []provider.ExternalMetricInfo
 }
 
+type ExternalConfigListener interface {
+	configChanged()
+}
+
 type WavefrontMetricsLister struct {
 	Prefix          string
 	UpdateInterval  time.Duration
@@ -32,11 +36,19 @@ type WavefrontMetricsLister struct {
 	Translator
 }
 
+func (l *WavefrontMetricsLister) configChanged() {
+	glog.V(5).Info("configuration changed. updating metrics.")
+	l.updateMetrics()
+}
+
 func (l *WavefrontMetricsLister) Run() {
 	l.RunUntil(wait.NeverStop)
 }
 
 func (l *WavefrontMetricsLister) RunUntil(stopChan <-chan struct{}) {
+	// register with external driver for config changes
+	l.externalDriver.registerListener(l)
+
 	go wait.Until(func() {
 		if err := l.updateMetrics(); err != nil {
 			glog.Errorf("error updating metrics: %v", err)

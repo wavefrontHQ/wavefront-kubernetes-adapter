@@ -1,4 +1,4 @@
-# wavefront-kubernetes-adapter
+# wavefront-kubernetes-adapter [![Build Status](https://travis-ci.org/wavefrontHQ/wavefront-kubernetes-adapter.svg?branch=master)](https://travis-ci.org/wavefrontHQ/wavefront-kubernetes-adapter)
 
 This repository provides a Wavefront Kubernetes HPA (Horizontal Pod Autoscaler) adapter that implements the custom metrics (`custom.metrics.k8s.io/v1beta1`) and external metrics (`external.metrics.k8s.io/v1beta1`) APIs. The adapter can be used with the `autoscaling/v2` HPA in Kubernetes 1.9+.
 

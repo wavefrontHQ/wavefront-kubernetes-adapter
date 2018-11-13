@@ -7,6 +7,9 @@ This repository provides a Wavefront Kubernetes HPA (Horizontal Pod Autoscaler) 
 - Kubernetes 1.9+
 - The [aggregation layer](https://kubernetes.io/docs/tasks/access-kubernetes-api/configure-aggregation-layer/) needs to be enabled in your Kubernetes cluster prior to deploying the Wavefront adapter.
 
+## Introduction
+See the [introduction](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/docs/introduction.md) for an overview of the functionality provided by this adapter.
+
 ## Configuration
 
 The adapter takes the standard Kubernetes generic API server arguments.

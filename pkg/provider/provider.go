@@ -149,8 +149,10 @@ func (p *wavefrontProvider) getSingle(info provider.CustomMetricInfo, name types
 }
 
 func (p *wavefrontProvider) getMultiple(info provider.CustomMetricInfo, namespace string, selector labels.Selector) (*custom_metrics.MetricValueList, error) {
-
 	resourceNames, err := helpers.ListObjectNames(p.mapper, p.kubeClient, namespace, selector, info)
+	if err != nil {
+		return nil, err
+	}
 	glog.V(5).Infof("DEBUG:---resourceNames: %s", resourceNames)
 
 	// query Wavefront for points

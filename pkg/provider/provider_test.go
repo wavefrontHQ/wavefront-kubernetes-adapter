@@ -51,12 +51,12 @@ func TestListAllExternalMetrics(t *testing.T) {
 func TestGetExternalMetric(t *testing.T) {
 	waveProvider := fakeProvider()
 
-	values, err := waveProvider.GetExternalMetric("", nil, provider.ExternalMetricInfo{Metric: "failMetric"})
+	_, err := waveProvider.GetExternalMetric("", nil, provider.ExternalMetricInfo{Metric: "failMetric"})
 	if err == nil {
 		t.Error("Expected error but no error returned")
 	}
 
-	values, err = waveProvider.GetExternalMetric("", nil, provider.ExternalMetricInfo{Metric: "externalMetric1"})
+	values, err := waveProvider.GetExternalMetric("", nil, provider.ExternalMetricInfo{Metric: "externalMetric1"})
 	if err != nil {
 		t.Error(err)
 	}

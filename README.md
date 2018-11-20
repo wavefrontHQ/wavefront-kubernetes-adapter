@@ -1,4 +1,4 @@
-# wavefront-kubernetes-adapter [![Build Status](https://travis-ci.com/wavefrontHQ/wavefront-kubernetes-adapter.svg?branch=master)](https://travis-ci.com/wavefrontHQ/wavefront-kubernetes-adapter)
+# wavefront-kubernetes-adapter [![build status][ci-img]][ci] [![Go Report Card][go-report-img]][go-report] [![Docker Pulls][docker-pull-img]][docker-img]
 
 This repository provides a Wavefront Kubernetes HPA (Horizontal Pod Autoscaler) adapter that implements the custom metrics (`custom.metrics.k8s.io/v1beta1`) and external metrics (`external.metrics.k8s.io/v1beta1`) APIs. The adapter can be used with the `autoscaling/v2` HPA in Kubernetes 1.9+.
 
@@ -84,3 +84,10 @@ You can similarly run `kubectl get --raw "/apis/external.metrics.k8s.io/v1beta1"
 See the sample configurations under [hpa-examples](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/tree/master/deploy/hpa-examples) on how to autoscale deployments based on metrics under the custom or external metrics APIs.
 
 Run `kubectl describe hpa example-hpa-custom-metrics` to verify the autoscaling works.
+
+[ci-img]: https://travis-ci.com/wavefrontHQ/wavefront-kubernetes-adapter.svg?branch=master
+[ci]: https://travis-ci.com/wavefrontHQ/wavefront-kubernetes-adapter
+[go-report-img]: https://goreportcard.com/badge/github.com/wavefronthq/wavefront-kubernetes-adapter
+[go-report]: https://goreportcard.com/report/github.com/wavefronthq/wavefront-kubernetes-adapter
+[docker-pull-img]: https://img.shields.io/docker/pulls/wavefronthq/wavefront-hpa-adapter.svg?logo=docker
+[docker-img]: https://hub.docker.com/r/wavefronthq/wavefront-hpa-adapter/

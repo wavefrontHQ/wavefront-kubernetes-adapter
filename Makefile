@@ -3,7 +3,10 @@ OUT_DIR?=./_output
 TEMP_DIR:=$(shell mktemp -d)
 DOCKER_REPO=wavefronthq
 DOCKER_IMAGE=wavefront-hpa-adapter
-VERSION=0.9
+VERSION=0.9.1
+
+# for testing, the built image will also be tagged with this name
+OVERRIDE_IMAGE_NAME?=vikramraman/wavefront-adapter
 
 .PHONY: all test verify-gofmt gofmt verify
 
@@ -40,9 +43,11 @@ container: build-linux
 	cp deploy/Dockerfile $(TEMP_DIR)
 	cp $(OUT_DIR)/$(ARCH)/wavefront-adapter-linux $(TEMP_DIR)/wavefront-adapter
 	cd $(TEMP_DIR)
-	docker build -t $(DOCKER_REPO)/$(DOCKER_IMAGE)-$(ARCH):$(VERSION) $(TEMP_DIR)
-	docker tag $(DOCKER_REPO)/$(DOCKER_IMAGE)-$(ARCH):$(VERSION) $(DOCKER_REPO)/$(DOCKER_IMAGE):latest
+	docker build -t $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(TEMP_DIR)
 	rm -rf $(TEMP_DIR)
+ifneq ($(OVERRIDE_IMAGE_NAME),)
+	docker tag $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(OVERRIDE_IMAGE_NAME)
+endif
 
 clean:
 	rm -rf $(OUT_DIR)

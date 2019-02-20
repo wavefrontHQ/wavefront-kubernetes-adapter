@@ -95,8 +95,8 @@ func (w DefaultWavefrontClient) ListMetrics(prefix string) ([]string, error) {
 	return result.Metrics, nil
 }
 
-func (w DefaultWavefrontClient) Query(ts int64, query string) (QueryResult, error) {
-	glog.V(4).Infof("DEBUG:---WavefrontClient.Query: ts=%s, query=%s", ts, query)
+func (w DefaultWavefrontClient) Query(start int64, query string) (QueryResult, error) {
+	glog.V(4).Infof("DEBUG:---WavefrontClient.Query: start=%s, query=%s", start, query)
 	if query == "" {
 		return QueryResult{}, &Error{
 			Type: ErrBadData,
@@ -106,7 +106,7 @@ func (w DefaultWavefrontClient) Query(ts int64, query string) (QueryResult, erro
 
 	vals := url.Values{}
 	vals.Set(queryKey, query)
-	vals.Set(startTime, strconv.FormatInt(ts, 10))
+	vals.Set(startTime, strconv.FormatInt(start, 10))
 	vals.Set(granularity, "m")
 
 	resp, err := w.Do("GET", chartEndpoint, vals)

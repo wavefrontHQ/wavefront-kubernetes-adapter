@@ -101,25 +101,29 @@ func (t WavefrontTranslator) ExternalMetricsFor(metricNames []string) []provider
 }
 
 func (t WavefrontTranslator) ExternalValuesFor(queryResult wave.QueryResult, name string) (*external_metrics.ExternalMetricValueList, error) {
-	matchingMetrics := []external_metrics.ExternalMetricValue{}
+	var matchingMetrics []external_metrics.ExternalMetricValue
 	for _, timeseries := range queryResult.Timeseries {
-		if len(timeseries.Data) == 0 {
+		length := len(timeseries.Data)
+		if length == 0 {
 			return nil, fmt.Errorf("no data for external metric: %s", name)
 		}
 
-		for _, metric := range timeseries.Data {
-			value, err := trimFloat(metric[1])
-			if err != nil {
-				glog.Errorf("error converting external metric: %s value: %f", name, metric[1])
-				continue
-			}
-			metricValue := external_metrics.ExternalMetricValue{
-				MetricName: name,
-				Value:      *resource.NewMilliQuantity(int64(1000*value), resource.DecimalSI),
-				Timestamp:  metav1.Now(),
-			}
-			matchingMetrics = append(matchingMetrics, metricValue)
+		// use the last data point
+		point := timeseries.Data[length-1]
+		if len(point) != 2 {
+			return nil, fmt.Errorf("invalid data point for external metric: %s", name)
 		}
+		value, err := trimFloat(point[1])
+		if err != nil {
+			glog.Errorf("error converting external metric: %s value: %f", name, point[1])
+			continue
+		}
+		metricValue := external_metrics.ExternalMetricValue{
+			MetricName: name,
+			Value:      *resource.NewMilliQuantity(int64(1000*value), resource.DecimalSI),
+			Timestamp:  metav1.Now(),
+		}
+		matchingMetrics = append(matchingMetrics, metricValue)
 	}
 	return &external_metrics.ExternalMetricValueList{
 		Items: matchingMetrics,

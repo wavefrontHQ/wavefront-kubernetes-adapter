@@ -73,8 +73,9 @@ func (p *wavefrontProvider) query(info provider.CustomMetricInfo, namespace stri
 }
 
 func (p *wavefrontProvider) doQuery(query string) (wave.QueryResult, error) {
-	now := time.Now().Unix()
-	queryResult, err := p.waveClient.Query(now, query)
+	now := time.Now()
+	start := now.Add(time.Duration(-30) * time.Second)
+	queryResult, err := p.waveClient.Query(start.Unix(), query)
 	if err != nil {
 		glog.Errorf("unable to fetch metrics from wavefront: %v", err)
 		// don't leak implementation details to the user

@@ -21,7 +21,7 @@
 "name": "namespaces/cpu.usage_rate",
 ```
 
-## nodes
+## Nodes
 ```
 "name": "nodes/uptime",
 

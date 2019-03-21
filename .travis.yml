@@ -1,3 +1,4 @@
+dist: xenial
 language: go
 
 # workaround for case sensitive build issues with wavefrontHQ

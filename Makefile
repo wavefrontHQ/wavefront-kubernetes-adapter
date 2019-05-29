@@ -3,7 +3,7 @@ OUT_DIR?=./_output
 TEMP_DIR:=$(shell mktemp -d)
 DOCKER_REPO=wavefronthq
 DOCKER_IMAGE=wavefront-hpa-adapter
-VERSION=0.9.1
+VERSION=0.9.2
 
 # for testing, the built image will also be tagged with this name
 OVERRIDE_IMAGE_NAME?=vikramraman/wavefront-adapter

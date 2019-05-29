@@ -42,6 +42,7 @@ const (
 	queryKey            = "q"
 	startTime           = "s"
 	granularity         = "g"
+	outsideSeries       = "i"
 )
 
 func (w DefaultWavefrontClient) Do(verb, endpoint string, query url.Values) (*http.Response, error) {
@@ -108,6 +109,7 @@ func (w DefaultWavefrontClient) Query(start int64, query string) (QueryResult, e
 	vals.Set(queryKey, query)
 	vals.Set(startTime, strconv.FormatInt(start, 10))
 	vals.Set(granularity, "m")
+	vals.Set(outsideSeries, "false")
 
 	resp, err := w.Do("GET", chartEndpoint, vals)
 	if err != nil {

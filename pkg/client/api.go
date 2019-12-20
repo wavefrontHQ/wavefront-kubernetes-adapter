@@ -97,7 +97,7 @@ func (w DefaultWavefrontClient) ListMetrics(prefix string) ([]string, error) {
 }
 
 func (w DefaultWavefrontClient) Query(start int64, query string) (QueryResult, error) {
-	glog.V(4).Infof("DEBUG:---WavefrontClient.Query: start=%s, query=%s", start, query)
+	glog.V(4).Infof("DEBUG:---WavefrontClient.Query: start=%d, query=%s", start, query)
 	if query == "" {
 		return QueryResult{}, &Error{
 			Type: ErrBadData,

@@ -5,13 +5,12 @@ language: go
 go_import_path: github.com/wavefronthq/wavefront-kubernetes-adapter
 
 go:
-  - "1.9.x"
-  - "1.10.x"
+  - "1.13.x"
   - master 
 
 install:
   - go get -v github.com/Masterminds/glide
-  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout 3e13fd16ed5b0808ba0fb2e4bd98eb325ccde0a1 && go install && cd -
+  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout b94b39d657d8abcccba6545e148f1201aee6ffec && go install && cd -
   - glide install -v
 
 matrix:

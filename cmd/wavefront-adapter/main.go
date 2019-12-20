@@ -82,7 +82,7 @@ func main() {
 	}
 
 	cmd := &WavefrontAdapter{
-		CustomMetricPrefix:    "heapster",
+		CustomMetricPrefix:    "kubernetes",
 		MetricsRelistInterval: 10 * time.Minute,
 	}
 	cmd.Name = "wavefront-custom-metrics-adapter"

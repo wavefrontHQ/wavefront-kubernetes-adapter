@@ -67,7 +67,7 @@ func fakeProvider() provider.MetricsProvider {
 	restMapper := &fakeRESTMapper{}
 	dynClient := &fake.FakeDynamicClient{}
 	api := client.NewFakeWavefrontClient()
-	prefix := "heapster"
+	prefix := "kubernetes"
 	translator := &WavefrontTranslator{
 		prefix: prefix,
 	}

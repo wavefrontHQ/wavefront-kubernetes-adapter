@@ -18,7 +18,7 @@ Additionally, the following arguments are specific to this adapter:
 
 - `wavefront-url`: Wavefront URL of the form *https://INSTANCE.wavefront.com*
 - `wavefront-token`: Wavefront API token with permissions to query for points
-- `wavefront-metric-prefix`: Metrics under the prefix are exposed in the custom metrics API. Defaults to `heapster`.
+- `wavefront-metric-prefix`: Metrics under the prefix are exposed in the custom metrics API. Defaults to `kubernetes`.
 - `metrics-relist-interval`: The interval at which to fetch the list of metrics from Wavefront. Defaults to 10 minutes.
 - `external-metrics-config`: Optional configuration file driving the external metrics API. If omitted, the external metrics API will not be supported.
 

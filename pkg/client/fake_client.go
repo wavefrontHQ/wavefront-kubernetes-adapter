@@ -17,11 +17,11 @@ func (w FakeWavefrontClient) Do(verb, endpoint string, query url.Values) (*http.
 
 func (w FakeWavefrontClient) ListMetrics(prefix string) ([]string, error) {
 	result := make([]string, 0)
-	result = append(result, "heapster.node.cpu.node_reservation")
-	result = append(result, "heapster.pod.network.rx_errors_rate")
-	result = append(result, "heapster.pod.network.tx_rate")
-	result = append(result, "heapster.pod.cpu.request")
-	result = append(result, "heapster.pod.cpu.usage_rate")
+	result = append(result, "kubernetes.node.cpu.node_reservation")
+	result = append(result, "kubernetes.pod.network.rx_errors_rate")
+	result = append(result, "kubernetes.pod.network.tx_rate")
+	result = append(result, "kubernetes.pod.cpu.request")
+	result = append(result, "kubernetes.pod.cpu.usage_rate")
 	return result, nil
 }
 

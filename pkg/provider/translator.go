@@ -39,8 +39,8 @@ func (t WavefrontTranslator) QueryFor(info provider.CustomMetricInfo, namespace 
 	}
 	filters := combine(resourceFilter, namespaceFilter)
 
-	// if prefix=heapster, metric='cpu.usage_rate', resType='pod', namespace='default' and names=['pod1', 'pod2']
-	// ts(heapster.pod.cpu.usage_rate, (pod_name="pod1" or pod_name="pod2") and (namespace_name="default"))
+	// if prefix=kubernetes, metric='cpu.usage_rate', resType='pod', namespace='default' and names=['pod1', 'pod2']
+	// ts(kubernetes.pod.cpu.usage_rate, (pod_name="pod1" or pod_name="pod2") and (namespace_name="default"))
 	query := fmt.Sprintf("ts(%s.%s.%s%s)", t.prefix, resType, metric, filters)
 	return query, true
 }
@@ -211,7 +211,7 @@ func namespaced(resourceName string) bool {
 	return resourceName == "pod" || resourceName == "pod_container"
 }
 
-// splits a metric such as "heapster.pod.cpu.limit" into "pod" and "cpu.limit"
+// splits a metric such as "kubernetes.pod.cpu.limit" into "pod" and "cpu.limit"
 func splitMetric(metricName string) (string, string) {
 	parts := strings.SplitN(metricName, ".", 3)
 	if len(parts) != 3 {

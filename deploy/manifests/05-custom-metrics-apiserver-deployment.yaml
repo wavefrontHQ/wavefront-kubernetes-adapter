@@ -25,6 +25,7 @@ spec:
         - /wavefront-adapter
         - --wavefront-url=https://<INSTANCE>.wavefront.com
         - --wavefront-token=<TOKEN_HERE>
+        - --wavefront-metric-prefix=kubernetes
         - --cert-dir=/etc/ssl/certs
         - --secure-port=6443
         - --metrics-relist-interval=15m

@@ -15,7 +15,7 @@ Use the external metrics API detailed below if you wish to use non Kubernetes me
 
 For the external metrics API, you have complete control over what metrics are provided by this adapter:
 
-1. Deploy a Kubernetes [config map](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/deploy/manifests/custom-metrics-config-map.yaml) listing the metrics you wish to autoscale on.
+1. Deploy a Kubernetes [config map](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/deploy/manifests/04-custom-metrics-config-map.yaml) listing the metrics you wish to autoscale on.
 2. Configure the [`external-metrics-config`](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/06b75dcf6fd9813a2b8a5a5762be1ae922d35ce7/deploy/manifests/custom-metrics-apiserver-deployment.yaml#L31) adapter property based on the config map and redeploy the adapter.
 3. Deploy a [HPA](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/deploy/hpa-examples/hpa-external.yaml) based on an external metric.
 

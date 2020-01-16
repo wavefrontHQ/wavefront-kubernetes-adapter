@@ -1,26 +1,34 @@
 ARCH?=amd64
 OUT_DIR?=./_output
-TEMP_DIR:=$(shell mktemp -d)
 DOCKER_REPO=wavefronthq
 DOCKER_IMAGE=wavefront-hpa-adapter
-VERSION=0.9.2
+
+VERSION=0.9.3
+GOLANG_VERSION?=1.13
+BINARY_NAME=wavefront-adapter
+GIT_COMMIT:=$(shell git rev-parse --short HEAD)
+
+REPO_DIR:=$(shell pwd)
+ifndef TEMP_DIR
+TEMP_DIR:=$(shell mktemp -d /tmp/wavefront.XXXXXX)
+endif
 
 # for testing, the built image will also be tagged with this name
-OVERRIDE_IMAGE_NAME?=vikramraman/wavefront-adapter
+OVERRIDE_IMAGE_NAME?=$(ADAPTER_TEST_IMAGE)
 
 .PHONY: all test verify-gofmt gofmt verify
 
 all: build
-build: vendor
-	CGO_ENABLED=0 GOARCH=$(ARCH) go build -a -tags netgo -o $(OUT_DIR)/$(ARCH)/wavefront-adapter ./cmd/wavefront-adapter/
 
-# Main driver used for dev test purposes
-build-query:
-	CGO_ENABLED=0 GOARCH=$(ARCH) go build -a -tags netgo -o $(OUT_DIR)/$(ARCH)/wavefront-query ./cmd/wavefront-query/
+fmt:
+	find . -type f -name "*.go" | grep -v "./vendor*" | xargs gofmt -s -w
+
+build: vendor
+	CGO_ENABLED=0 GOARCH=$(ARCH) go build -a -tags netgo -o $(OUT_DIR)/$(ARCH)/$(BINARY_NAME) ./cmd/wavefront-adapter/
 
 # Build linux executable
 build-linux: vendor
-	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -tags netgo -o $(OUT_DIR)/$(ARCH)/wavefront-adapter-linux ./cmd/wavefront-adapter/
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -a -tags netgo -o $(OUT_DIR)/$(ARCH)/$(BINARY_NAME)-linux ./cmd/wavefront-adapter/
 
 vendor: glide.lock
 	glide install -v
@@ -31,19 +39,14 @@ test: vendor
 lint:
 	go vet -composites=false ./...
 
-verify-gofmt:
-	./hack/gofmt-all.sh -v
+container:
+	# Run build in a container in order to have reproducible builds
+	docker run --rm -v $(TEMP_DIR):/build -v $(REPO_DIR):/go/src/github.com/wavefronthq/wavefront-kubernetes-adapter -w /go/src/github.com/wavefronthq/wavefront-kubernetes-adapter golang:$(GOLANG_VERSION) /bin/bash -c "\
+		cp /etc/ssl/certs/ca-certificates.crt /build \
+		&& GOARCH=$(ARCH) CGO_ENABLED=0 go build -a -tags netgo -o /build/$(BINARY_NAME) github.com/wavefronthq/wavefront-kubernetes-adapter/cmd/wavefront-adapter/"
 
-gofmt:
-	./hack/gofmt-all.sh
-
-verify: verify-gofmt test
-
-container: build-linux
 	cp deploy/Dockerfile $(TEMP_DIR)
-	cp $(OUT_DIR)/$(ARCH)/wavefront-adapter-linux $(TEMP_DIR)/wavefront-adapter
-	cd $(TEMP_DIR)
-	docker build -t $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(TEMP_DIR)
+	docker build --pull -t $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(TEMP_DIR)
 	rm -rf $(TEMP_DIR)
 ifneq ($(OVERRIDE_IMAGE_NAME),)
 	docker tag $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(OVERRIDE_IMAGE_NAME)

@@ -34,6 +34,11 @@ import (
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/provider"
 )
 
+var (
+	version string
+	commit  string
+)
+
 type WavefrontAdapter struct {
 	basecmd.AdapterBase
 
@@ -97,7 +102,7 @@ func main() {
 		"Wavefront Kubernetes Metrics Prefix")
 	flags.StringVar(&cmd.AdapterConfigFile, "external-metrics-config", "",
 		"Configuration file for driving external metrics API")
-	flags.StringVar(&cmd.Message, "msg", "starting wavefront adapter...", "startup message")
+	flags.StringVar(&cmd.Message, "msg", "starting wavefront adapter", "startup message")
 	flags.AddGoFlagSet(flag.CommandLine) // make sure we get the glog flags
 	flags.Parse(os.Args)
 
@@ -105,7 +110,7 @@ func main() {
 	cmd.WithCustomMetrics(wavefrontProvider)
 	cmd.WithExternalMetrics(wavefrontProvider)
 
-	glog.Infof(cmd.Message)
+	glog.Infof("%s version: %s commit tip: %s", cmd.Message, version, commit)
 	if err := cmd.Run(wait.NeverStop); err != nil {
 		glog.Fatalf("unable to run custom metrics adapter: %v", err)
 	}

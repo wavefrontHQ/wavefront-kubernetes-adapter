@@ -8,10 +8,11 @@ go:
   - "1.13.x"
   - master 
 
-install:
-  - go get -v github.com/Masterminds/glide
-  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout b94b39d657d8abcccba6545e148f1201aee6ffec && go install && cd -
-  - glide install -v
+# Force-enable Go modules. Also force go to use the code in vendor/
+# These will both be unnecessary when Go 1.14 lands.
+env: Go111MODULE=on
+
+install: true
 
 matrix:
   # It's ok if our code fails on unstable development versions of Go.

@@ -25,17 +25,14 @@ all: build
 fmt:
 	find . -type f -name "*.go" | grep -v "./vendor*" | xargs gofmt -s -w
 
-build: vendor
+build:
 	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags "$(LDFLAGS)" -a -tags netgo -o $(OUT_DIR)/$(ARCH)/$(BINARY_NAME) ./cmd/wavefront-adapter/
 
 # Build linux executable
-build-linux: vendor
+build-linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -ldflags "$(LDFLAGS)" -a -tags netgo -o $(OUT_DIR)/$(ARCH)/$(BINARY_NAME)-linux ./cmd/wavefront-adapter/
 
-vendor: glide.lock
-	glide install -v
-
-test: vendor
+test:
 	CGO_ENABLED=0 go test ./pkg/...
 
 lint:

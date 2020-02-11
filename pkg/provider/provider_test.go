@@ -68,7 +68,7 @@ func fakeProvider() provider.MetricsProvider {
 	dynClient := &fake.FakeDynamicClient{}
 	api := client.NewFakeWavefrontClient()
 	prefix := "kubernetes"
-	translator := &WavefrontTranslator{
+	translator := &wavefrontTranslator{
 		prefix: prefix,
 	}
 
@@ -81,7 +81,7 @@ func fakeProvider() provider.MetricsProvider {
 	lister.updateMetrics()
 
 	return &wavefrontProvider{
-		kubeClient:     dynClient,
+		dynClient:      dynClient,
 		mapper:         restMapper,
 		waveClient:     api,
 		Translator:     translator,

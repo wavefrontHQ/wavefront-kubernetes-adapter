@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/metrics/pkg/apis/custom_metrics"
 	"k8s.io/metrics/pkg/apis/external_metrics"
 
@@ -23,7 +24,7 @@ import (
 
 type wavefrontProvider struct {
 	mapper         apimeta.RESTMapper
-	kubeClient     dynamic.Interface
+	dynClient      dynamic.Interface
 	waveClient     wave.WavefrontClient
 	lister         MetricsLister
 	externalDriver ExternalMetricsDriver
@@ -31,33 +32,34 @@ type wavefrontProvider struct {
 	Translator
 }
 
-func NewWavefrontProvider(client dynamic.Interface, mapper apimeta.RESTMapper, waveClient wave.WavefrontClient,
-	prefix string, listInterval time.Duration, externalMetricsCfg string) (provider.MetricsProvider, MetricsLister) {
+type WavefrontProviderConfig struct {
+	DynClient    dynamic.Interface
+	KubeClient   kubernetes.Interface
+	Mapper       apimeta.RESTMapper
+	WaveClient   wave.WavefrontClient
+	Prefix       string
+	ListInterval time.Duration
+	ExternalCfg  string
+}
 
-	glog.Infof("wavefrontProvider prefix: %s, listInterval: %d", prefix, listInterval)
+func NewWavefrontProvider(cfg WavefrontProviderConfig) (provider.MetricsProvider, MetricsLister) {
+	glog.Infof("wavefrontProvider Prefix: %s, ListInterval: %d", cfg.Prefix, cfg.ListInterval)
 
-	translator := &WavefrontTranslator{
-		prefix: prefix,
-	}
-
-	var externalDriver ExternalMetricsDriver = nil
-	if externalMetricsCfg != "" {
-		externalDriver = &WavefrontExternalDriver{cfgFile: externalMetricsCfg}
-		externalDriver.loadConfig()
-	}
+	translator := NewWavefrontTranslator(cfg.Prefix)
+	externalDriver := NewExternalMetricsDriver(cfg.KubeClient, cfg.ExternalCfg)
 
 	lister := &WavefrontMetricsLister{
-		Prefix:         prefix,
-		UpdateInterval: listInterval,
-		waveClient:     waveClient,
+		Prefix:         cfg.Prefix,
+		UpdateInterval: cfg.ListInterval,
+		waveClient:     cfg.WaveClient,
 		externalDriver: externalDriver,
 		Translator:     translator,
 	}
 
 	return &wavefrontProvider{
-		kubeClient:     client,
-		mapper:         mapper,
-		waveClient:     waveClient,
+		dynClient:      cfg.DynClient,
+		mapper:         cfg.Mapper,
+		waveClient:     cfg.WaveClient,
 		lister:         lister,
 		externalDriver: externalDriver,
 		Translator:     translator,
@@ -150,7 +152,7 @@ func (p *wavefrontProvider) getSingle(info provider.CustomMetricInfo, name types
 }
 
 func (p *wavefrontProvider) getMultiple(info provider.CustomMetricInfo, namespace string, selector labels.Selector) (*custom_metrics.MetricValueList, error) {
-	resourceNames, err := helpers.ListObjectNames(p.mapper, p.kubeClient, namespace, selector, info)
+	resourceNames, err := helpers.ListObjectNames(p.mapper, p.dynClient, namespace, selector, info)
 	if err != nil {
 		return nil, err
 	}

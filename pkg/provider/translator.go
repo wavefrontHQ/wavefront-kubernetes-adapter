@@ -24,12 +24,16 @@ type Translator interface {
 	ExternalValuesFor(queryResult wave.QueryResult, metric string) (*external_metrics.ExternalMetricValueList, error)
 }
 
-type WavefrontTranslator struct {
+type wavefrontTranslator struct {
 	prefix string
 }
 
+func NewWavefrontTranslator(prefix string) Translator {
+	return &wavefrontTranslator{prefix: prefix}
+}
+
 // Translates given metric info into a Wavefront ts query
-func (t WavefrontTranslator) QueryFor(info provider.CustomMetricInfo, namespace string, names ...string) (string, bool) {
+func (t wavefrontTranslator) QueryFor(info provider.CustomMetricInfo, namespace string, names ...string) (string, bool) {
 	metric := info.Metric
 	resType := resourceType(info.GroupResource.Resource)
 	resourceFilter := filterFor(tagKey(resType), " or ", names...)
@@ -39,13 +43,13 @@ func (t WavefrontTranslator) QueryFor(info provider.CustomMetricInfo, namespace 
 	}
 	filters := combine(resourceFilter, namespaceFilter)
 
-	// if prefix=kubernetes, metric='cpu.usage_rate', resType='pod', namespace='default' and names=['pod1', 'pod2']
+	// if Prefix=kubernetes, metric='cpu.usage_rate', resType='pod', namespace='default' and names=['pod1', 'pod2']
 	// ts(kubernetes.pod.cpu.usage_rate, (pod_name="pod1" or pod_name="pod2") and (namespace_name="default"))
 	query := fmt.Sprintf("ts(%s.%s.%s%s)", t.prefix, resType, metric, filters)
 	return query, true
 }
 
-func (t WavefrontTranslator) MatchValuesToNames(queryResult wave.QueryResult, groupResource schema.GroupResource) (map[string]float64, bool) {
+func (t wavefrontTranslator) MatchValuesToNames(queryResult wave.QueryResult, groupResource schema.GroupResource) (map[string]float64, bool) {
 
 	glog.V(5).Info("DEBUG:---MatchValuesToNames", queryResult.Timeseries)
 
@@ -74,7 +78,7 @@ func (t WavefrontTranslator) MatchValuesToNames(queryResult wave.QueryResult, gr
 	return values, true
 }
 
-func (t WavefrontTranslator) CustomMetricsFor(metricNames []string) []provider.CustomMetricInfo {
+func (t wavefrontTranslator) CustomMetricsFor(metricNames []string) []provider.CustomMetricInfo {
 	var customMetrics []provider.CustomMetricInfo
 	for _, metricName := range metricNames {
 		resourceName, metric := splitMetric(metricName)
@@ -90,7 +94,7 @@ func (t WavefrontTranslator) CustomMetricsFor(metricNames []string) []provider.C
 	return customMetrics
 }
 
-func (t WavefrontTranslator) ExternalMetricsFor(metricNames []string) []provider.ExternalMetricInfo {
+func (t wavefrontTranslator) ExternalMetricsFor(metricNames []string) []provider.ExternalMetricInfo {
 	var externalMetrics []provider.ExternalMetricInfo
 	for _, metricName := range metricNames {
 		externalMetrics = append(externalMetrics, provider.ExternalMetricInfo{
@@ -100,7 +104,7 @@ func (t WavefrontTranslator) ExternalMetricsFor(metricNames []string) []provider
 	return externalMetrics
 }
 
-func (t WavefrontTranslator) ExternalValuesFor(queryResult wave.QueryResult, name string) (*external_metrics.ExternalMetricValueList, error) {
+func (t wavefrontTranslator) ExternalValuesFor(queryResult wave.QueryResult, name string) (*external_metrics.ExternalMetricValueList, error) {
 	var matchingMetrics []external_metrics.ExternalMetricValue
 	for _, timeseries := range queryResult.Timeseries {
 		length := len(timeseries.Data)

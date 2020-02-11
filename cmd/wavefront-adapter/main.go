@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	"k8s.io/client-go/kubernetes"
 	"net/url"
 	"os"
 	"runtime"
@@ -57,6 +58,15 @@ type WavefrontAdapter struct {
 }
 
 func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
+	conf, err := a.ClientConfig()
+	if err != nil {
+		glog.Fatalf("error getting kube config: %v", err)
+	}
+	kubeClient, err := kubernetes.NewForConfig(conf)
+	if err != nil {
+		glog.Fatalf("error creating kube client: %v", err)
+	}
+
 	dynClient, err := a.DynamicClient()
 	if err != nil {
 		glog.Fatalf("unable to construct dynamic client: %v", err)
@@ -73,7 +83,15 @@ func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
 	}
 	waveClient := client.NewWavefrontClient(waveURL, a.WavefrontAPIToken)
 
-	metricsProvider, runnable := provider.NewWavefrontProvider(dynClient, mapper, waveClient, a.CustomMetricPrefix, a.MetricsRelistInterval, a.AdapterConfigFile)
+	metricsProvider, runnable := provider.NewWavefrontProvider(provider.WavefrontProviderConfig{
+		DynClient:    dynClient,
+		KubeClient:   kubeClient,
+		Mapper:       mapper,
+		WaveClient:   waveClient,
+		Prefix:       a.CustomMetricPrefix,
+		ListInterval: a.MetricsRelistInterval,
+		ExternalCfg:  a.AdapterConfigFile,
+	})
 	runnable.RunUntil(wait.NeverStop)
 	return metricsProvider
 }

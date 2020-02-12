@@ -3,13 +3,14 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/golang/glog"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"strconv"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type WavefrontClient interface {
@@ -50,7 +51,7 @@ func (w DefaultWavefrontClient) Do(verb, endpoint string, query url.Values) (*ht
 	u.Path = path.Join(u.Path, endpoint)
 	u.RawQuery = query.Encode()
 
-	glog.V(4).Infof("DEBUG:---DefaultWavefrontClient.Do, query: %s", u.String())
+	log.Debugf("DefaultWavefrontClient.Do, query: %s", u.String())
 
 	req, err := http.NewRequest(verb, u.String(), nil)
 	if err != nil {
@@ -72,7 +73,7 @@ func (w DefaultWavefrontClient) Do(verb, endpoint string, query url.Values) (*ht
 }
 
 func (w DefaultWavefrontClient) ListMetrics(prefix string) ([]string, error) {
-	glog.V(4).Info("DEBUG:---DefaultWavefrontClient.ListMetrics")
+	log.Debugf("DefaultWavefrontClient.ListMetrics")
 
 	vals := url.Values{}
 	vals.Set("m", prefix)
@@ -92,12 +93,12 @@ func (w DefaultWavefrontClient) ListMetrics(prefix string) ([]string, error) {
 			Msg:  err.Error(),
 		}
 	}
-	glog.V(8).Info("DEBUG:---DefaultWavefrontClient.ListMetrics", result.Metrics)
+	log.Trace("DefaultWavefrontClient.ListMetrics", result.Metrics)
 	return result.Metrics, nil
 }
 
 func (w DefaultWavefrontClient) Query(start int64, query string) (QueryResult, error) {
-	glog.V(4).Infof("DEBUG:---WavefrontClient.Query: start=%d, query=%s", start, query)
+	log.Debugf("DefaultWavefrontClient.Query: start=%d, query=%s", start, query)
 	if query == "" {
 		return QueryResult{}, &Error{
 			Type: ErrBadData,
@@ -125,5 +126,6 @@ func (w DefaultWavefrontClient) Query(start int64, query string) (QueryResult, e
 			Msg:  err.Error(),
 		}
 	}
+	log.Trace("DefaultWavefrontClient.Query", result)
 	return result, nil
 }

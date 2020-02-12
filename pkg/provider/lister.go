@@ -5,11 +5,11 @@ import (
 	"sync"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	"github.com/golang/glog"
 	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
-
 	wave "github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 )
 
@@ -37,7 +37,7 @@ type WavefrontMetricsLister struct {
 }
 
 func (l *WavefrontMetricsLister) configChanged() {
-	glog.V(5).Info("configuration changed. updating metrics.")
+	log.Info("configuration changed. updating metrics.")
 	l.updateMetrics()
 }
 
@@ -51,7 +51,7 @@ func (l *WavefrontMetricsLister) RunUntil(stopChan <-chan struct{}) {
 
 	go wait.Until(func() {
 		if err := l.updateMetrics(); err != nil {
-			glog.Errorf("error updating metrics: %v", err)
+			log.Errorf("error updating metrics: %v", err)
 		}
 	}, l.UpdateInterval, stopChan)
 }
@@ -71,7 +71,7 @@ func (l *WavefrontMetricsLister) updateMetrics() error {
 func (l *WavefrontMetricsLister) updateCustomMetrics() error {
 	metrics, err := l.waveClient.ListMetrics(l.Prefix + ".*")
 	if err != nil {
-		glog.Errorf("error retrieving list of custom metrics from Wavefront: %v", err)
+		log.Errorf("error retrieving list of custom metrics from Wavefront: %v", err)
 		l.customMetrics = []provider.CustomMetricInfo{}
 		return err
 	}

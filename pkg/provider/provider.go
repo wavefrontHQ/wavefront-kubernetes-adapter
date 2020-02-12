@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	apierr "k8s.io/apimachinery/pkg/api/errors"
 	apimeta "k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -15,7 +17,6 @@ import (
 	"k8s.io/metrics/pkg/apis/custom_metrics"
 	"k8s.io/metrics/pkg/apis/external_metrics"
 
-	"github.com/golang/glog"
 	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
 	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider/helpers"
 
@@ -43,7 +44,7 @@ type WavefrontProviderConfig struct {
 }
 
 func NewWavefrontProvider(cfg WavefrontProviderConfig) (provider.MetricsProvider, MetricsLister) {
-	glog.Infof("wavefrontProvider Prefix: %s, ListInterval: %d", cfg.Prefix, cfg.ListInterval)
+	log.Infof("wavefrontProvider Prefix: %s, ListInterval: %d", cfg.Prefix, cfg.ListInterval)
 
 	translator := NewWavefrontTranslator(cfg.Prefix)
 	externalDriver := NewExternalMetricsDriver(cfg.KubeClient, cfg.ExternalCfg)
@@ -79,7 +80,7 @@ func (p *wavefrontProvider) doQuery(query string) (wave.QueryResult, error) {
 	start := now.Add(time.Duration(-30) * time.Second)
 	queryResult, err := p.waveClient.Query(start.Unix(), query)
 	if err != nil {
-		glog.Errorf("unable to fetch metrics from wavefront: %v", err)
+		log.Errorf("unable to fetch metrics from wavefront: %v", err)
 		// don't leak implementation details to the user
 		return wave.QueryResult{}, apierr.NewInternalError(fmt.Errorf("unable to fetch metrics"))
 	}
@@ -107,7 +108,7 @@ func (p *wavefrontProvider) metricsFor(queryResult wave.QueryResult, namespace s
 	if !found {
 		return nil, provider.NewMetricNotFoundError(info.GroupResource, info.Metric)
 	}
-	glog.V(5).Info("DEBUG:---metricsFor values", values)
+	log.Debugf("metricsFor values: %v", values)
 
 	res := make([]custom_metrics.MetricValue, len(names))
 	for i, name := range names {
@@ -139,13 +140,13 @@ func (p *wavefrontProvider) getSingle(info provider.CustomMetricInfo, name types
 	}
 
 	if len(namedValues) > 1 {
-		glog.V(2).Infof("Got more than one result (%v results) when fetching metric %s for %q, using the first one with a matching name...",
+		log.Infof("Got more than one result (%v results) when fetching metric %s for %q, using the first one with a matching name...",
 			len(queryResult.Timeseries), info.String(), name)
 	}
 
 	resultValue, nameFound := namedValues[name.Name]
 	if !nameFound {
-		glog.Errorf("None of the results returned by when fetching metric %s for %q matched the resource name", info.String(), name)
+		log.Errorf("None of the results returned by when fetching metric %s for %q matched the resource name", info.String(), name)
 		return nil, provider.NewMetricNotFoundForError(info.GroupResource, info.Metric, name.Name)
 	}
 	return p.metricFor(resultValue, name, info)
@@ -156,7 +157,7 @@ func (p *wavefrontProvider) getMultiple(info provider.CustomMetricInfo, namespac
 	if err != nil {
 		return nil, err
 	}
-	glog.V(5).Infof("DEBUG:---resourceNames: %s", resourceNames)
+	log.Debugf("resourceNames: %s", resourceNames)
 
 	// query Wavefront for points
 	queryResult, err := p.query(info, namespace, resourceNames...)
@@ -167,12 +168,19 @@ func (p *wavefrontProvider) getMultiple(info provider.CustomMetricInfo, namespac
 }
 
 func (p *wavefrontProvider) GetMetricByName(name types.NamespacedName, info provider.CustomMetricInfo) (*custom_metrics.MetricValue, error) {
-	glog.V(5).Info("DEBUG:---GetMetricByName", name, info)
+	log.WithFields(log.Fields{
+		"name":   name,
+		"metric": info,
+	}).Info("received custom metric request")
 	return p.getSingle(info, name)
 }
 
 func (p *wavefrontProvider) GetMetricBySelector(namespace string, selector labels.Selector, info provider.CustomMetricInfo) (*custom_metrics.MetricValueList, error) {
-	glog.V(5).Info("DEBUG:---GetMetricBySelector", namespace, selector, info)
+	log.WithFields(log.Fields{
+		"namespace": namespace,
+		"selector":  selector,
+		"metric":    info,
+	}).Info("received custom metric request")
 	return p.getMultiple(info, namespace, selector)
 }
 
@@ -183,7 +191,11 @@ func (p *wavefrontProvider) ListAllMetrics() []provider.CustomMetricInfo {
 }
 
 func (p *wavefrontProvider) GetExternalMetric(namespace string, metricSelector labels.Selector, info provider.ExternalMetricInfo) (*external_metrics.ExternalMetricValueList, error) {
-	glog.V(5).Info("DEBUG:---GetExternalMetric", namespace, metricSelector, info)
+	log.WithFields(log.Fields{
+		"namespace": namespace,
+		"selector":  metricSelector,
+		"metric":    info,
+	}).Info("received external metric request")
 
 	if p.externalDriver == nil {
 		return nil, apierr.NewInternalError(fmt.Errorf("missing external driver for external metric: %s", info.Metric))

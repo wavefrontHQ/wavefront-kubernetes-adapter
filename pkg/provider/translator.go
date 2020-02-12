@@ -5,14 +5,14 @@ import (
 	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/metrics/pkg/apis/external_metrics"
 
-	"github.com/golang/glog"
 	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
-
 	wave "github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 )
 
@@ -50,8 +50,7 @@ func (t wavefrontTranslator) QueryFor(info provider.CustomMetricInfo, namespace 
 }
 
 func (t wavefrontTranslator) MatchValuesToNames(queryResult wave.QueryResult, groupResource schema.GroupResource) (map[string]float64, bool) {
-
-	glog.V(5).Info("DEBUG:---MatchValuesToNames", queryResult.Timeseries)
+	log.Debugf("MatchValuesToNames: %v", queryResult.Timeseries)
 
 	if len(queryResult.Timeseries) == 0 {
 		return nil, false
@@ -119,7 +118,7 @@ func (t wavefrontTranslator) ExternalValuesFor(queryResult wave.QueryResult, nam
 		}
 		value, err := trimFloat(point[1])
 		if err != nil {
-			glog.Errorf("error converting external metric: %s value: %f", name, point[1])
+			log.Errorf("error converting external metric: %s value: %f", name, point[1])
 			continue
 		}
 		metricValue := external_metrics.ExternalMetricValue{

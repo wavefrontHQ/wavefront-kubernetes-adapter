@@ -14,7 +14,6 @@ require (
 	github.com/coreos/go-semver v0.0.0-20150304020126-568e959cd898 // indirect
 	github.com/coreos/go-systemd v0.0.0-20161114122254-48702e0da86b // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
-	github.com/davecgh/go-spew v1.1.1-0.20170626231645-782f4967f2dc // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/elazarl/go-bindata-assetfs v0.0.0-20150624150248-3dcc96556217 // indirect
 	github.com/emicklei/go-restful v2.2.1+incompatible // indirect
@@ -53,6 +52,7 @@ require (
 	github.com/prometheus/client_model v0.0.0-20150212101744-fa8ad6fec335 // indirect
 	github.com/prometheus/common v0.0.0-20170427095455-13ba4ddd0caa // indirect
 	github.com/prometheus/procfs v0.0.0-20170519190837-65c1f6f8f0fc // indirect
+	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.2-0.20180319062004-c439c4fa0937 // indirect
 	github.com/spf13/pflag v1.0.1 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
@@ -66,7 +66,7 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0-20150622162204-20b71e5b60d7 // indirect
 	gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0 // indirect
 	gopkg.in/yaml.v2 v2.2.4
-	k8s.io/api v0.0.0-20180621030718-91b2d7a92a89 // indirect
+	k8s.io/api v0.0.0-20180621030718-91b2d7a92a89
 	k8s.io/apimachinery v0.0.0-20180608150058-fda675fbe852
 	k8s.io/apiserver v0.0.0-20180621034955-44b612291bb7
 	k8s.io/client-go v0.0.0-20180621033303-4cacfee698b0

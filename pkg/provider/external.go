@@ -5,7 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/golang/glog"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/config"
 
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -41,17 +42,16 @@ func NewExternalMetricsDriver(client kubernetes.Interface, cfgFile string) Exter
 }
 
 func (d *WavefrontExternalDriver) loadConfig() {
-	//TODO: don't quit if failed to load config?
 	go wait.Until(func() {
 		fileInfo, err := os.Stat(d.cfgFile)
 		if err != nil {
-			glog.Fatalf("unable to get external config file stats: %v", err)
+			log.Fatalf("unable to get external config file stats: %v", err)
 		}
 
 		if fileInfo.ModTime().After(d.cfgModTime) {
 			metricsConfig, err := config.FromFile(d.cfgFile)
 			if err != nil {
-				glog.Fatalf("unable to load external metrics discovery configuration: %v", err)
+				log.Fatalf("unable to load external metrics discovery configuration: %v", err)
 			}
 			d.cfgModTime = fileInfo.ModTime()
 			d.addRules(metricsConfig.Rules)
@@ -74,7 +74,7 @@ func (d *WavefrontExternalDriver) addRules(rules []config.MetricRule) {
 	if d.listener != nil {
 		d.listener.configChanged()
 	}
-	glog.V(5).Info("added external metrics rules", rules)
+	log.Debugf("added external metrics rules: %v", rules)
 }
 
 func (d *WavefrontExternalDriver) deleteRules(rules []config.MetricRule) {
@@ -92,14 +92,14 @@ func (d *WavefrontExternalDriver) deleteRules(rules []config.MetricRule) {
 	if d.listener != nil {
 		d.listener.configChanged()
 	}
-	glog.V(5).Info("deleted external metrics rules", rules)
+	log.Debugf("deleted external metrics rules: %v", rules)
 }
 
 func (d *WavefrontExternalDriver) registerListener(listener ExternalConfigListener) {
 	d.lock.RLock()
 	defer d.lock.RUnlock()
 	d.listener = listener
-	glog.V(5).Info("External configuration listener registered")
+	log.Info("external configuration listener registered")
 }
 
 func (d *WavefrontExternalDriver) getMetricNames() []string {

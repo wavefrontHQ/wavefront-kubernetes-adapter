@@ -1,16 +1,19 @@
 package provider
 
 import (
-	"github.com/golang/glog"
+	"reflect"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/config"
+
 	"k8s.io/api/autoscaling/v2beta1"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
-	"reflect"
-	"strings"
 )
 
 const (
@@ -33,7 +36,7 @@ func StartHPAListener(client kubernetes.Interface, addFunc, deleteFunc RuleHandl
 }
 
 func (l *hpaListener) listen() {
-	glog.V(2).Info("listening for HPA instances")
+	log.Info("listening for HPA instances")
 
 	rc := l.kubeClient.AutoscalingV2beta1().RESTClient()
 	lw := cache.NewListWatchFromClient(rc, "horizontalpodautoscalers", v1.NamespaceAll, fields.Everything())
@@ -54,7 +57,7 @@ func (l *hpaListener) listen() {
 			// HPA objects are updated frequently when status changes
 			// validate if annotations have changed
 			if reflect.DeepEqual(oldHPA.Annotations, newHPA.Annotations) {
-				glog.V(5).Infof("annotations have not changed for %s", newHPA.Name)
+				log.Debugf("annotations have not changed for %s", newHPA.Name)
 				return
 			}
 

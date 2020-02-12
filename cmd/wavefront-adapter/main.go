@@ -18,16 +18,17 @@ package main
 
 import (
 	"flag"
-	"k8s.io/client-go/kubernetes"
 	"net/url"
 	"os"
 	"runtime"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apiserver/pkg/util/logs"
+	"k8s.io/client-go/kubernetes"
 
-	"github.com/golang/glog"
 	basecmd "github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/cmd"
 	customprovider "github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
 
@@ -55,31 +56,33 @@ type WavefrontAdapter struct {
 	CustomMetricPrefix string
 	// The file containing the metrics discovery configuration
 	AdapterConfigFile string
+	// The log level
+	LogLevel string
 }
 
 func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
 	conf, err := a.ClientConfig()
 	if err != nil {
-		glog.Fatalf("error getting kube config: %v", err)
+		log.Fatalf("error getting kube config: %v", err)
 	}
 	kubeClient, err := kubernetes.NewForConfig(conf)
 	if err != nil {
-		glog.Fatalf("error creating kube client: %v", err)
+		log.Fatalf("error creating kube client: %v", err)
 	}
 
 	dynClient, err := a.DynamicClient()
 	if err != nil {
-		glog.Fatalf("unable to construct dynamic client: %v", err)
+		log.Fatalf("unable to construct dynamic client: %v", err)
 	}
 
 	mapper, err := a.RESTMapper()
 	if err != nil {
-		glog.Fatalf("unable to construct discovery REST mapper: %v", err)
+		log.Fatalf("unable to construct discovery REST mapper: %v", err)
 	}
 
 	waveURL, err := url.Parse(a.WavefrontServerURL)
 	if err != nil {
-		glog.Fatalf("unable to parse wavefront url: %v", err)
+		log.Fatalf("unable to parse wavefront url: %v", err)
 	}
 	waveClient := client.NewWavefrontClient(waveURL, a.WavefrontAPIToken)
 
@@ -97,6 +100,10 @@ func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
 }
 
 func main() {
+	log.SetFormatter(&log.TextFormatter{})
+	log.SetLevel(log.InfoLevel)
+	log.SetOutput(os.Stdout)
+
 	logs.InitLogs()
 	defer logs.FlushLogs()
 
@@ -120,16 +127,26 @@ func main() {
 		"Wavefront Kubernetes Metrics Prefix")
 	flags.StringVar(&cmd.AdapterConfigFile, "external-metrics-config", "",
 		"Configuration file for driving external metrics API")
+	flags.StringVar(&cmd.LogLevel, "log-level", "info", "one of info, debug or trace")
 	flags.StringVar(&cmd.Message, "msg", "starting wavefront adapter", "startup message")
 	flags.AddGoFlagSet(flag.CommandLine) // make sure we get the glog flags
 	flags.Parse(os.Args)
+
+	switch cmd.LogLevel {
+	case "trace":
+		log.SetLevel(log.TraceLevel)
+	case "debug":
+		log.SetLevel(log.DebugLevel)
+	case "warn":
+		log.SetLevel(log.WarnLevel)
+	}
 
 	wavefrontProvider := cmd.makeProviderOrDie()
 	cmd.WithCustomMetrics(wavefrontProvider)
 	cmd.WithExternalMetrics(wavefrontProvider)
 
-	glog.Infof("%s version: %s commit tip: %s", cmd.Message, version, commit)
+	log.Infof("%s version: %s commit tip: %s", cmd.Message, version, commit)
 	if err := cmd.Run(wait.NeverStop); err != nil {
-		glog.Fatalf("unable to run custom metrics adapter: %v", err)
+		log.Fatalf("unable to run custom metrics adapter: %v", err)
 	}
 }

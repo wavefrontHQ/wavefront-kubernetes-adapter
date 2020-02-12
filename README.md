@@ -1,27 +1,21 @@
 # Wavefront HPA Adapter for Kubernetes
 [![build status][ci-img]][ci] [![Go Report Card][go-report-img]][go-report] [![Docker Pulls][docker-pull-img]][docker-img]
 
-This repository provides a Wavefront HPA (Horizontal Pod Autoscaler) adapter for Kubernetes that implements the custom metrics (`custom.metrics.k8s.io/v1beta1`) and external metrics (`external.metrics.k8s.io/v1beta1`) APIs. The adapter can be used with the `autoscaling/v2` HPA in Kubernetes 1.9+.
+[Wavefront](https://docs.wavefront.com) is a high-performance streaming analytics platform for monitoring and optimizing your environment and applications.
+
+The Wavefront HPA (Horizontal Pod Autoscaler) adapter for Kubernetes implements the Kubernetes **custom.metrics.k8s.io/v1beta1** and **external.metrics.k8s.io/v1beta1** APIs allowing you to autoscale pods based on metrics available within Wavefront.
 
 ## Prerequisites
 
 - Kubernetes 1.9+
 - The [aggregation layer](https://kubernetes.io/docs/tasks/access-kubernetes-api/configure-aggregation-layer/) needs to be enabled in your Kubernetes cluster prior to deploying the Wavefront adapter.
 
-## Introduction
-See the [introduction](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/docs/introduction.md) for an overview of the functionality provided by this adapter.
+## Getting Started
+Refer the [Getting Started](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/docs/introduction.md) guide for an overview of the functionality provided by this adapter.
 
 ## Configuration
 
-The adapter takes the standard Kubernetes generic API server arguments.
-
-Additionally, the following arguments are specific to this adapter:
-
-- `wavefront-url`: Wavefront URL of the form *https://INSTANCE.wavefront.com*
-- `wavefront-token`: Wavefront API token with permissions to query for points
-- `wavefront-metric-prefix`: Metrics under the prefix are exposed in the custom metrics API. Defaults to `kubernetes`.
-- `metrics-relist-interval`: The interval at which to fetch the list of metrics from Wavefront. Defaults to 10 minutes.
-- `external-metrics-config`: Optional configuration file driving the external metrics API. If omitted, the external metrics API will not be supported.
+Refer the [documentation](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/docs/configuration.md) for detailed configuration options.
 
 ## Installation
 
@@ -29,6 +23,8 @@ Additionally, the following arguments are specific to this adapter:
 2. Edit the `wavefront-url` and `wavefront-token` properties in `deploy/manifests/05-custom-metrics-apiserver-deployment.yaml`.
 3. Optionally, edit the `deploy/manifests/04-custom-metrics-config-map.yaml` and modify the external metrics you wish to export.
 4. Finally run `kubectl apply -f deploy/manifests` to deploy the adapter in your Kubernetes cluster.
+
+## Debugging
 
 To verify the installation, run `kubectl get --raw "/apis/custom.metrics.k8s.io/v1beta1" | jq .`. You should get the list of supported metrics similar to:
 

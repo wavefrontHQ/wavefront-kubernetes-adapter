@@ -24,7 +24,6 @@ require (
 	github.com/go-openapi/spec v0.0.0-20180213232550-1de3e0542de6 // indirect
 	github.com/go-openapi/swag v0.0.0-20170606142751-f3f9494671f9 // indirect
 	github.com/gogo/protobuf v0.0.0-20170330071051-c0656edd0d9e // indirect
-	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7 // indirect
 	github.com/google/btree v0.0.0-20160524151835-7d79101e329e // indirect
 	github.com/google/gofuzz v0.0.0-20161122191042-44d81051d367 // indirect
@@ -36,7 +35,7 @@ require (
 	github.com/imdario/mergo v0.0.0-20141206190957-6633656539c1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jonboulle/clockwork v0.1.0 // indirect
-	github.com/json-iterator/go v0.0.0-20180424004623-2ddf6d758266 // indirect
+	github.com/json-iterator/go v1.1.5 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/kubernetes-incubator/custom-metrics-apiserver v0.0.0-20180821200408-81ff8bee362b
 	github.com/mailru/easyjson v0.0.0-20170624190925-2f5df55504eb // indirect
@@ -66,10 +65,10 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0-20150622162204-20b71e5b60d7 // indirect
 	gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0 // indirect
 	gopkg.in/yaml.v2 v2.2.4
-	k8s.io/api v0.0.0-20180621030718-91b2d7a92a89
-	k8s.io/apimachinery v0.0.0-20180608150058-fda675fbe852
-	k8s.io/apiserver v0.0.0-20180621034955-44b612291bb7
-	k8s.io/client-go v0.0.0-20180621033303-4cacfee698b0
+	k8s.io/api v0.0.0-20180904230853-4e7be11eab3f
+	k8s.io/apimachinery v0.0.0-20180904193909-def12e63c512
+	k8s.io/apiserver v0.0.0-20180910083620-386115dd78fd
+	k8s.io/client-go v0.0.0-20180910083459-2cefa64ff137
 	k8s.io/kube-openapi v0.0.0-20180531204156-8a9b82f00b3a // indirect
-	k8s.io/metrics v0.0.0-20180621050023-89f8a18a5efb
+	k8s.io/metrics v0.0.0-20180910084238-9aa1ab0459f0
 )

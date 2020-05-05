@@ -19,6 +19,10 @@ Refer the [documentation](https://github.com/wavefrontHQ/wavefront-kubernetes-ad
 
 ## Installation
 
+### Helm install
+Refer to the [helm chart](https://github.com/wavefrontHQ/helm#installation) to install the adapter using Helm.
+
+### Manual install
 1. Clone this repo.
 2. Edit the `wavefront-url` and `wavefront-token` properties in `deploy/manifests/05-custom-metrics-apiserver-deployment.yaml`.
 3. Optionally, edit the `deploy/manifests/04-custom-metrics-config-map.yaml` and modify the external metrics you wish to export.

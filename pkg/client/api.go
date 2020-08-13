@@ -80,7 +80,7 @@ func (w DefaultWavefrontClient) ListMetrics(prefix string) ([]string, error) {
 
 	vals := url.Values{}
 	vals.Set("m", prefix)
-	vals.Set("l", "150")
+	vals.Set("l", "500")
 
 	resp, err := w.Do("GET", metricsListEndpoint, vals)
 	if err != nil {

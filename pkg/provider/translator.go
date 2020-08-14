@@ -64,6 +64,7 @@ func (t wavefrontTranslator) MatchValuesToNames(queryResult wave.QueryResult, gr
 
 	values := make(map[string]float64, len(queryResult.Timeseries))
 	for _, timeseries := range queryResult.Timeseries {
+                length := len(timeseries.Data)
 		if len(timeseries.Data) == 0 {
 			return nil, false
 		}
@@ -71,7 +72,7 @@ func (t wavefrontTranslator) MatchValuesToNames(queryResult wave.QueryResult, gr
 		if !found {
 			return nil, false
 		}
-		value, err := trimFloat(timeseries.Data[0][1])
+		value, err := trimFloat(timeseries.Data[length-1][1])
 		if err != nil {
 			return nil, false
 		}

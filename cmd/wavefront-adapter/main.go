@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -78,7 +79,7 @@ func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
 		KubeClient:   kubeClient,
 		Mapper:       mapper,
 		WaveClient:   waveClient,
-		Prefix:       a.CustomMetricPrefix,
+		Prefix:       strings.Trim(a.CustomMetricPrefix, "."),
 		ListInterval: a.MetricsRelistInterval,
 		ExternalCfg:  a.AdapterConfigFile,
 	})

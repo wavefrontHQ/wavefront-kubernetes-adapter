@@ -84,7 +84,7 @@ func (t wavefrontTranslator) MatchValuesToNames(queryResult wave.QueryResult, gr
 func (t wavefrontTranslator) CustomMetricsFor(metricNames []string) []provider.CustomMetricInfo {
 	var customMetrics []provider.CustomMetricInfo
 	for _, metricName := range metricNames {
-		resourceName, metric := splitMetric(metricName)
+		resourceName, metric := splitMetric(t.prefix, metricName)
 		if resourceName == "" || metric == "" {
 			continue
 		}
@@ -219,12 +219,15 @@ func namespaced(resourceName string) bool {
 }
 
 // splits a metric such as "kubernetes.pod.cpu.limit" into "pod" and "cpu.limit"
-func splitMetric(metricName string) (string, string) {
-	parts := strings.SplitN(metricName, ".", 3)
-	if len(parts) != 3 {
+func splitMetric(prefix, metricName string) (string, string) {
+	if strings.HasPrefix(metricName, prefix) {
+		metricName = metricName[len(prefix)+1:]
+	}
+	parts := strings.SplitN(metricName, ".", 2)
+	if len(parts) != 2 {
 		return "", ""
 	}
-	return parts[1], parts[2]
+	return parts[0], parts[1]
 }
 
 // trims a float64 to 3 decimal digits

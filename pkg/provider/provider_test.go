@@ -5,13 +5,15 @@ package provider
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
+
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/dynamic/fake"
-	"testing"
 )
 
 func TestListAllMetrics(t *testing.T) {

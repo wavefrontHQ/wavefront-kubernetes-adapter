@@ -14,11 +14,11 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"k8s.io/apimachinery/pkg/util/wait"
-	"k8s.io/apiserver/pkg/util/logs"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/component-base/logs"
 
-	basecmd "github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/cmd"
-	customprovider "github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
+	basecmd "github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/cmd"
+	customprovider "github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider"
 
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/provider"

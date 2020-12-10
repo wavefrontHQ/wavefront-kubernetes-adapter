@@ -104,8 +104,8 @@ func (p *wavefrontProvider) metricFor(value float64, name types.NamespacedName, 
 		Metric: custom_metrics.MetricIdentifier{
 			Name: info.Metric,
 		},
-		Timestamp:       metav1.Now(),
-		Value:           *resource.NewMilliQuantity(int64(value*1000.0), resource.DecimalSI),
+		Timestamp: metav1.Now(),
+		Value:     *resource.NewMilliQuantity(int64(value*1000.0), resource.DecimalSI),
 	}, nil
 }
 

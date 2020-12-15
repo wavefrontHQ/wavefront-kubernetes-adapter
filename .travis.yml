@@ -5,7 +5,7 @@ language: go
 go_import_path: github.com/wavefronthq/wavefront-kubernetes-adapter
 
 go:
-  - "1.13.x"
+  - "1.15.x"
   - master 
 
 # Force-enable Go modules. Also force go to use the code in vendor/

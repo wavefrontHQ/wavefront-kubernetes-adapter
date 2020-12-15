@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
+	"github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider"
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 
 	"k8s.io/apimachinery/pkg/labels"
@@ -27,7 +27,7 @@ func TestListAllMetrics(t *testing.T) {
 
 func TestGetMetricByName(t *testing.T) {
 	waveProvider := fakeProvider()
-	_, err := waveProvider.GetMetricByName(namespacedName("test-deployment-7f54684694-2cg5v", "default"), fakeCustomMetricInfo())
+	_, err := waveProvider.GetMetricByName(namespacedName("test-deployment-7f54684694-2cg5v", "default"), fakeCustomMetricInfo(), labels.Everything())
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,7 +37,7 @@ func GetMetricBySelector(t *testing.T) {
 	//TODO: there's a bug in the fake REST mapping that currently causes this test to fail
 	waveProvider := fakeProvider()
 	selector := labels.Everything()
-	_, err := waveProvider.GetMetricBySelector("default", selector, fakeCustomMetricInfo())
+	_, err := waveProvider.GetMetricBySelector("default", selector, fakeCustomMetricInfo(), labels.Everything())
 
 	if err != nil {
 		t.Error(err)

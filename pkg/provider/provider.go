@@ -20,8 +20,8 @@ import (
 	"k8s.io/metrics/pkg/apis/custom_metrics"
 	"k8s.io/metrics/pkg/apis/external_metrics"
 
-	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider"
-	"github.com/kubernetes-incubator/custom-metrics-apiserver/pkg/provider/helpers"
+	"github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider"
+	"github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider/helpers"
 
 	wave "github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 )
@@ -35,6 +35,8 @@ type wavefrontProvider struct {
 
 	Translator
 }
+
+var _ provider.MetricsProvider = &wavefrontProvider{}
 
 type WavefrontProviderConfig struct {
 	DynClient    dynamic.Interface
@@ -99,9 +101,11 @@ func (p *wavefrontProvider) metricFor(value float64, name types.NamespacedName, 
 
 	return &custom_metrics.MetricValue{
 		DescribedObject: objRef,
-		MetricName:      info.Metric,
-		Timestamp:       metav1.Time{time.Now()},
-		Value:           *resource.NewMilliQuantity(int64(value*1000.0), resource.DecimalSI),
+		Metric: custom_metrics.MetricIdentifier{
+			Name: info.Metric,
+		},
+		Timestamp: metav1.Now(),
+		Value:     *resource.NewMilliQuantity(int64(value*1000.0), resource.DecimalSI),
 	}, nil
 }
 
@@ -170,7 +174,7 @@ func (p *wavefrontProvider) getMultiple(info provider.CustomMetricInfo, namespac
 	return p.metricsFor(queryResult, namespace, info, resourceNames)
 }
 
-func (p *wavefrontProvider) GetMetricByName(name types.NamespacedName, info provider.CustomMetricInfo) (*custom_metrics.MetricValue, error) {
+func (p *wavefrontProvider) GetMetricByName(name types.NamespacedName, info provider.CustomMetricInfo, _ labels.Selector) (*custom_metrics.MetricValue, error) {
 	log.WithFields(log.Fields{
 		"name":   name,
 		"metric": info,
@@ -178,7 +182,7 @@ func (p *wavefrontProvider) GetMetricByName(name types.NamespacedName, info prov
 	return p.getSingle(info, name)
 }
 
-func (p *wavefrontProvider) GetMetricBySelector(namespace string, selector labels.Selector, info provider.CustomMetricInfo) (*custom_metrics.MetricValueList, error) {
+func (p *wavefrontProvider) GetMetricBySelector(namespace string, selector labels.Selector, info provider.CustomMetricInfo, _ labels.Selector) (*custom_metrics.MetricValueList, error) {
 	log.WithFields(log.Fields{
 		"namespace": namespace,
 		"selector":  selector,

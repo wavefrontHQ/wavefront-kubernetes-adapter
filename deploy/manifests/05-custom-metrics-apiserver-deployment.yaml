@@ -20,7 +20,7 @@ spec:
       containers:
       - name: custom-metrics-apiserver
         imagePullPolicy: IfNotPresent
-        image: wavefronthq/wavefront-hpa-adapter:0.9.6
+        image: wavefronthq/wavefront-hpa-adapter:0.9.7
         args:
         - /wavefront-adapter
         - --wavefront-url=https://<INSTANCE>.wavefront.com

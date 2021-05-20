@@ -40,26 +40,6 @@ func TestDefaultWavefrontClient_Do(t *testing.T) {
 				"Bearer of good news",
 			})
 	})
-
-	t.Run("TODO: Unhappy path", func(t *testing.T) {
-		baseUrl, _ := url.Parse("https://base.url")
-		clientMock := &ClientMock{}
-		wfClient := NewWavefrontClient(baseUrl, "of good news", 7*time.Second)
-
-		clientRef := wfClient.(*DefaultWavefrontClient)
-		clientRef.client = clientMock
-		wfClient.Do("GET", "foo", url.Values{
-			"l": {"500"},
-		})
-
-		assert.True(t, clientMock.called)
-		assert.Equal(t, clientMock.lastReq.Method, "GET")
-		assert.Equal(t, clientMock.lastReq.URL.String(), "https://base.url/foo?l=500")
-		assert.Equal(t, clientMock.lastReq.Header.Values("Authorization"),
-			[]string{
-				"Bearer of good news",
-			})
-	})
 }
 
 func TestNewWavefrontClient(t *testing.T) {

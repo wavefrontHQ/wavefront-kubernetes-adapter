@@ -74,7 +74,7 @@ func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
 	if err != nil {
 		log.Fatalf("unable to parse wavefront url: %v", err)
 	}
-	waveClient := client.NewWavefrontClient(waveURL, a.WavefrontAPIToken, 10*time.Second)
+	waveClient := client.NewWavefrontClient(waveURL, a.WavefrontAPIToken, a.ClientTimeout)
 
 	metricsProvider, runnable := provider.NewWavefrontProvider(provider.WavefrontProviderConfig{
 		DynClient:    dynClient,
@@ -134,7 +134,9 @@ func main() {
 		log.SetLevel(log.WarnLevel)
 	}
 
-	wavefrontProvider := cmd.makeProviderOrDie()
+	//fmt.Printf("", cmd.ClientTimeout)
+
+	wavefrontProvider := cmd.makeProviderOrDie() // TODO: public?
 	cmd.WithCustomMetrics(wavefrontProvider)
 	cmd.WithExternalMetrics(wavefrontProvider)
 

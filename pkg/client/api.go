@@ -61,7 +61,7 @@ func (w DefaultWavefrontClient) Do(verb, endpoint string, query url.Values) (*ht
 	u.Path = path.Join(u.Path, endpoint)
 	u.RawQuery = query.Encode()
 
-	log.Printf("DefaultWavefrontClient.Do, query: %s", u.String())
+	log.Debugf("DefaultWavefrontClient.Do, query: %s", u.String())
 
 	req, err := http.NewRequest(verb, u.String(), nil)
 	if err != nil {

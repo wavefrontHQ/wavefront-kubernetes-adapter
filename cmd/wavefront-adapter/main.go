@@ -36,6 +36,8 @@ type WavefrontAdapter struct {
 	Message string
 	// MetricsRelistInterval is the interval at which list of metrics are fetched from Wavefront
 	MetricsRelistInterval time.Duration
+	// Wavefront client timeout
+	APIClientTimeout time.Duration
 	// Wavefront Server URL of the form https://INSTANCE.wavefront.com
 	WavefrontServerURL string
 	// Wavefront API token with permissions to query points
@@ -72,7 +74,7 @@ func (a *WavefrontAdapter) makeProviderOrDie() customprovider.MetricsProvider {
 	if err != nil {
 		log.Fatalf("unable to parse wavefront url: %v", err)
 	}
-	waveClient := client.NewWavefrontClient(waveURL, a.WavefrontAPIToken)
+	waveClient := client.NewWavefrontClient(waveURL, a.WavefrontAPIToken, a.APIClientTimeout)
 
 	metricsProvider, runnable := provider.NewWavefrontProvider(provider.WavefrontProviderConfig{
 		DynClient:    dynClient,
@@ -102,11 +104,14 @@ func main() {
 	cmd := &WavefrontAdapter{
 		CustomMetricPrefix:    "kubernetes",
 		MetricsRelistInterval: 10 * time.Minute,
+		APIClientTimeout:      10 * time.Second,
 	}
 	cmd.Name = "wavefront-custom-metrics-adapter"
 	flags := cmd.Flags()
 	flags.DurationVar(&cmd.MetricsRelistInterval, "metrics-relist-interval", cmd.MetricsRelistInterval, ""+
 		"interval at which to fetch the list of all available metrics from Wavefront")
+	flags.DurationVar(&cmd.APIClientTimeout, "api-client-timeout", cmd.APIClientTimeout, ""+
+		"Wavefront client timeout")
 	flags.StringVar(&cmd.WavefrontServerURL, "wavefront-url", "",
 		"Wavefront url of the form https://INSTANCE.wavefront.com")
 	flags.StringVar(&cmd.WavefrontAPIToken, "wavefront-token", "",

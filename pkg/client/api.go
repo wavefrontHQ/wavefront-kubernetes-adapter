@@ -6,15 +6,16 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"strconv"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
+
+const DEFAULT_TIMEOUT = 10 * time.Second
 
 type WavefrontClient interface {
 	Do(verb, endpoint string, query url.Values) (*http.Response, error)
@@ -22,21 +23,27 @@ type WavefrontClient interface {
 	Query(ts int64, query string) (QueryResult, error)
 }
 
+type httpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type DefaultWavefrontClient struct {
 	baseURL *url.URL
 	token   string
+	client  httpClient
 }
 
-func NewWavefrontClient(baseURL *url.URL, token string) WavefrontClient {
+func NewWavefrontClient(baseURL *url.URL, token string, apiTimeout time.Duration) WavefrontClient {
+	clientTimeout := apiTimeout
+	if apiTimeout <= 0 {
+		clientTimeout = DEFAULT_TIMEOUT
+	}
 	return &DefaultWavefrontClient{
 		baseURL: baseURL,
 		token:   token,
+		client:  &http.Client{Timeout: clientTimeout},
 	}
 }
-
-var (
-	client = &http.Client{Timeout: time.Second * 10}
-)
 
 const (
 	authzHeader         = "Authorization"
@@ -63,11 +70,12 @@ func (w DefaultWavefrontClient) Do(verb, endpoint string, query url.Values) (*ht
 
 	req.Header.Set(authzHeader, bearer+w.token)
 
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return resp, err
 	}
 
+	// Check all 2xx HTTP codes
 	code := resp.StatusCode
 	if code/100 != 2 {
 		return resp, fmt.Errorf("error status=%s code=%d", resp.Status, code)

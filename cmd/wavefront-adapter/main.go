@@ -136,7 +136,7 @@ func main() {
 
 	//fmt.Printf("", cmd.ClientTimeout)
 
-	wavefrontProvider := cmd.makeProviderOrDie() // TODO: public?
+	wavefrontProvider := cmd.makeProviderOrDie()
 	cmd.WithCustomMetrics(wavefrontProvider)
 	cmd.WithExternalMetrics(wavefrontProvider)
 

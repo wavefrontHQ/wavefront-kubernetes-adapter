@@ -33,9 +33,9 @@ type DefaultWavefrontClient struct {
 	client  httpClient
 }
 
-func NewWavefrontClient(baseURL *url.URL, token string, timeout time.Duration) WavefrontClient {
-	clientTimeout := timeout
-	if timeout <= 0 {
+func NewWavefrontClient(baseURL *url.URL, token string, apiTimeout time.Duration) WavefrontClient {
+	clientTimeout := apiTimeout
+	if apiTimeout <= 0 {
 		clientTimeout = DEFAULT_TIMEOUT
 	}
 	return &DefaultWavefrontClient{

@@ -104,7 +104,7 @@ func main() {
 	cmd := &WavefrontAdapter{
 		CustomMetricPrefix:    "kubernetes",
 		MetricsRelistInterval: 10 * time.Minute,
-		APIClientTimeout:         10 * time.Second,
+		APIClientTimeout:      10 * time.Second,
 	}
 	cmd.Name = "wavefront-custom-metrics-adapter"
 	flags := cmd.Flags()

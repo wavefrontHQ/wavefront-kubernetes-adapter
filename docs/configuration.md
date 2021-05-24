@@ -12,6 +12,7 @@ Usage:
       --wavefront-token string                                  Wavefront API token with permissions to query for points
       --wavefront-metric-prefix string                          Metrics under this prefix are exposed in the custom metrics API. (default "kubernetes.")
       --metrics-relist-interval duration                        interval at which to fetch the list of custom metric names from Wavefront (default 10m0s)
+      --api-client-timeout duration                             API client timeout (default 10s)
       --external-metrics-config string                          Configuration file for driving external metrics API
       --log-level string                                        one of info, debug, warn or trace (default "info")      
 ```

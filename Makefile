@@ -4,7 +4,7 @@ DOCKER_REPO=wavefronthq
 DOCKER_IMAGE=wavefront-hpa-adapter
 
 VERSION=0.9.9
-GOLANG_VERSION?=1.13
+GOLANG_VERSION?=1.18
 BINARY_NAME=wavefront-adapter
 GIT_COMMIT:=$(shell git rev-parse --short HEAD)
 

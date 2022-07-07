@@ -12,7 +12,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	"github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider"
+	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
 	wave "github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 )
 

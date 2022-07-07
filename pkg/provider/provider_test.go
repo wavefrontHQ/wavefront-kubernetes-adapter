@@ -4,11 +4,12 @@
 package provider
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
-	"github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider"
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
+	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
 
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -27,7 +28,7 @@ func TestListAllMetrics(t *testing.T) {
 
 func TestGetMetricByName(t *testing.T) {
 	waveProvider := fakeProvider()
-	_, err := waveProvider.GetMetricByName(namespacedName("test-deployment-7f54684694-2cg5v", "default"), fakeCustomMetricInfo(), labels.Everything())
+	_, err := waveProvider.GetMetricByName(context.Background(), namespacedName("test-deployment-7f54684694-2cg5v", "default"), fakeCustomMetricInfo(), labels.Everything())
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,7 +38,7 @@ func GetMetricBySelector(t *testing.T) {
 	//TODO: there's a bug in the fake REST mapping that currently causes this test to fail
 	waveProvider := fakeProvider()
 	selector := labels.Everything()
-	_, err := waveProvider.GetMetricBySelector("default", selector, fakeCustomMetricInfo(), labels.Everything())
+	_, err := waveProvider.GetMetricBySelector(context.Background(), "default", selector, fakeCustomMetricInfo(), labels.Everything())
 
 	if err != nil {
 		t.Error(err)
@@ -56,12 +57,12 @@ func TestListAllExternalMetrics(t *testing.T) {
 func TestGetExternalMetric(t *testing.T) {
 	waveProvider := fakeProvider()
 
-	_, err := waveProvider.GetExternalMetric("", nil, provider.ExternalMetricInfo{Metric: "failMetric"})
+	_, err := waveProvider.GetExternalMetric(context.Background(), "", nil, provider.ExternalMetricInfo{Metric: "failMetric"})
 	if err == nil {
 		t.Error("Expected error but no error returned")
 	}
 
-	values, err := waveProvider.GetExternalMetric("", nil, provider.ExternalMetricInfo{Metric: "externalMetric1"})
+	values, err := waveProvider.GetExternalMetric(context.Background(), "", nil, provider.ExternalMetricInfo{Metric: "externalMetric1"})
 	if err != nil {
 		t.Error(err)
 	}

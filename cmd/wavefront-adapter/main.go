@@ -17,8 +17,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/component-base/logs"
 
-	basecmd "github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/cmd"
-	customprovider "github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider"
+	basecmd "sigs.k8s.io/custom-metrics-apiserver/pkg/cmd"
+	customprovider "sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
 
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/provider"

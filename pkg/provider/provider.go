@@ -4,6 +4,7 @@
 package provider
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -20,8 +21,8 @@ import (
 	"k8s.io/metrics/pkg/apis/custom_metrics"
 	"k8s.io/metrics/pkg/apis/external_metrics"
 
-	"github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider"
-	"github.com/kubernetes-sigs/custom-metrics-apiserver/pkg/provider/helpers"
+	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
+	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider/helpers"
 
 	wave "github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
 )
@@ -174,7 +175,7 @@ func (p *wavefrontProvider) getMultiple(info provider.CustomMetricInfo, namespac
 	return p.metricsFor(queryResult, namespace, info, resourceNames)
 }
 
-func (p *wavefrontProvider) GetMetricByName(name types.NamespacedName, info provider.CustomMetricInfo, _ labels.Selector) (*custom_metrics.MetricValue, error) {
+func (p *wavefrontProvider) GetMetricByName(ctx context.Context, name types.NamespacedName, info provider.CustomMetricInfo, _ labels.Selector) (*custom_metrics.MetricValue, error) {
 	log.WithFields(log.Fields{
 		"name":   name,
 		"metric": info,
@@ -182,7 +183,7 @@ func (p *wavefrontProvider) GetMetricByName(name types.NamespacedName, info prov
 	return p.getSingle(info, name)
 }
 
-func (p *wavefrontProvider) GetMetricBySelector(namespace string, selector labels.Selector, info provider.CustomMetricInfo, _ labels.Selector) (*custom_metrics.MetricValueList, error) {
+func (p *wavefrontProvider) GetMetricBySelector(ctx context.Context, namespace string, selector labels.Selector, info provider.CustomMetricInfo, _ labels.Selector) (*custom_metrics.MetricValueList, error) {
 	log.WithFields(log.Fields{
 		"namespace": namespace,
 		"selector":  selector,
@@ -197,7 +198,7 @@ func (p *wavefrontProvider) ListAllMetrics() []provider.CustomMetricInfo {
 	return p.lister.ListCustomMetrics()
 }
 
-func (p *wavefrontProvider) GetExternalMetric(namespace string, metricSelector labels.Selector, info provider.ExternalMetricInfo) (*external_metrics.ExternalMetricValueList, error) {
+func (p *wavefrontProvider) GetExternalMetric(ctx context.Context, namespace string, metricSelector labels.Selector, info provider.ExternalMetricInfo) (*external_metrics.ExternalMetricValueList, error) {
 	log.WithFields(log.Fields{
 		"namespace": namespace,
 		"selector":  metricSelector,

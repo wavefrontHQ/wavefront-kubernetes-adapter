@@ -12,8 +12,8 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
 	wave "github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
+	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
 )
 
 type MetricsLister interface {

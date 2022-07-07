@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"testing"
 
-	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/client"
+	"sigs.k8s.io/custom-metrics-apiserver/pkg/provider"
 
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"

@@ -1,9 +1,9 @@
 ARCH?=amd64
 OUT_DIR?=./_output
-DOCKER_REPO=wavefronthq
-DOCKER_IMAGE=wavefront-hpa-adapter
+DOCKER_REPO?=wavefronthq
+DOCKER_IMAGE?=wavefront-hpa-adapter
 
-VERSION=0.9.9
+VERSION?=0.9.10
 GOLANG_VERSION?=1.18
 BINARY_NAME=wavefront-adapter
 GIT_COMMIT:=$(shell git rev-parse --short HEAD)
@@ -50,6 +50,11 @@ container:
 ifneq ($(OVERRIDE_IMAGE_NAME),)
 	docker tag $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(OVERRIDE_IMAGE_NAME)
 endif
+
+publish: container
+	docker tag $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(DOCKER_REPO)/$(DOCKER_IMAGE):latest
+	docker push $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION)
+	docker push $(DOCKER_REPO)/$(DOCKER_IMAGE):latest
 
 clean:
 	rm -rf $(OUT_DIR)

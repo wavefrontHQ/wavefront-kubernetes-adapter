@@ -1,5 +1,5 @@
 .idea
-_output
+build
 vendor
 notes.txt
 apiserver.*

@@ -1,5 +1,6 @@
-from scratch
+FROM --platform=$BUILDPLATFORM gcr.io/distroless/static:latest
+ARG BUILDPLATFORM
 
-COPY _output/amd64/wavefront-adapter-linux wavefront-adapter
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+WORKDIR /
+COPY $BUILDPLATFORM .
 ENTRYPOINT ["/wavefront-adapter", "--logtostderr=true"]

@@ -23,31 +23,17 @@ pipeline {
     }
 
     stages {
-        stage('Build Linux Binary') {
-            steps {
-                script {
-                    sh "make build-linux"
-                }
-            }
-        }
-
-        stage('Make/Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://projects.registry.vmware.com', 'projects-registry-vmware-tanzu_observability-robot') {
-                        def harborImage = docker.build("tanzu_observability/${REPO_NAME}:${VERSION_NUMBER}")
-                        /* Push the container to the custom Registry */
-                        harborImage.push()
-                        harborImage.push("latest")
-                    }
-//
-//                     docker.withRegistry('https://index.docker.io/v1/', 'Dockerhub_svcwfjenkins') {
-//                       def dockerHubImage = docker.build("wavefronthq/${REPO_NAME}:${VERSION_NUMBER}")
-//                       dockerHubImage.push()
-//                       dockerHubImage.push("latest")
-//                     }
-                }
-            }
+    stages {
+        stage("Publish GA Harbor Image") {
+          environment {
+            HARBOR_CREDS = credentials("projects-registry-vmware-tanzu_observability-robot")
+            DOCKER_REPO = 'projects.registry.vmware.com/tanzu_observability'
+            DOCKER_IMAGE = 'kubernetes-adapter'
+          }
+          steps {
+            sh 'echo $HARBOR_CREDS_PSW | docker login $PREFIX -u $HARBOR_CREDS_USR --password-stdin'
+            sh 'make publish'
+          }
         }
 
         stage('Create Github Release') {

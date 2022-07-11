@@ -14,7 +14,7 @@ pipeline {
   }
 
     parameters {
-        string(name: 'VERSION', defaultValue: '', description: 'The version number to release as')
+        string(name: 'VERSION_NUMBER', defaultValue: '', description: 'The version number to release as')
         string(name: 'TARGET_COMITISH', defaultValue: 'master', description: 'Specify a specific commit hash or branch to release the version to.')
         string(name: 'RELEASE_NOTES', defaultValue: '', description: 'The public release notes for the version. Use \\n to create newlines')
         booleanParam(name: 'IS_DRAFT', defaultValue: true, description: 'If the release should be marked as a draft (unpublished)')
@@ -23,16 +23,31 @@ pipeline {
     }
 
     stages {
-        stage("Publish GA Harbor Image") {
-          environment {
-            HARBOR_CREDS = credentials("projects-registry-vmware-tanzu_observability-robot")
-            DOCKER_REPO = 'projects.registry.vmware.com/tanzu_observability'
-            DOCKER_IMAGE = 'wavefront-kubernetes-adapter'
-          }
-          steps {
-            sh 'echo $HARBOR_CREDS_PSW | docker login $PREFIX -u $HARBOR_CREDS_USR --password-stdin'
-            sh 'make publish'
-          }
+        stage('Build Linux Binary') {
+            steps {
+                script {
+                    sh "make build-linux"
+                }
+            }
+        }
+
+        stage('Make/Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://projects.registry.vmware.com', 'projects-registry-vmware-tanzu_observability-robot') {
+                        def harborImage = docker.build("tanzu_observability/${REPO_NAME}:${VERSION_NUMBER}")
+                        /* Push the container to the custom Registry */
+                        harborImage.push()
+                        harborImage.push("latest")
+                    }
+//
+//                     docker.withRegistry('https://index.docker.io/v1/', 'Dockerhub_svcwfjenkins') {
+//                       def dockerHubImage = docker.build("wavefronthq/${REPO_NAME}:${VERSION_NUMBER}")
+//                       dockerHubImage.push()
+//                       dockerHubImage.push("latest")
+//                     }
+                }
+            }
         }
 
         stage('Create Github Release') {
@@ -40,7 +55,7 @@ pipeline {
                 script {
                     if (params.createGithubRelease) {
                         TARGET_COMITISH_TRIMMED = TARGET_COMITISH.minus("origin/")
-                        sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION}\", \"target_commitish\": \"${TARGET_COMITISH_TRIMMED}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
+                        sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION_NUMBER}\", \"target_commitish\": \"${TARGET_COMITISH_TRIMMED}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
                     }
                 }
             }
@@ -61,7 +76,7 @@ pipeline {
 //       }
 //       success {
 //         script {
-//           slackSend (channel: '#tobs-k8s-assist', color: '#008000', message: "Success!! `wavefront-kubernetes-adapter:${VERSION}` released!")
+//           slackSend (channel: '#tobs-k8s-assist', color: '#008000', message: "Success!! `wavefront-kubernetes-adapter:${VERSION_NUMBER}` released!")
 //         }
 //       }
 //       always {

@@ -35,6 +35,19 @@ pipeline {
           }
         }
 
+        stage("Publish GA Docker Hub") {
+          environment {
+            DOCKERHUB_CREDS=credentials('Dockerhub_svcwfjenkins')
+            DOCKER_REPO = 'wavefronthq'
+            DOCKER_IMAGE = 'wavefront-hpa-adapter'
+          }
+
+          steps {
+            sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'
+            sh 'make publish'
+          }
+        }
+
         stage('Create Github Release') {
             steps {
                 script {
@@ -47,25 +60,25 @@ pipeline {
         }
     }
 
-//     post {
-//       // Notify only on null->failure or success->failure or any->success
-//       failure {
-//         script {
-//           if(currentBuild.previousBuild == null) {
-//             slackSend (channel: '#tobs-k8po-team', color: '#FF0000', message: "RELEASE BUILD FAILED: <${env.BUILD_URL}|${env.JOB_NAME} [${env.BUILD_NUMBER}]>")
-//           }
-//         }
-//       }
-//       regression {
-//         slackSend (channel: '#tobs-k8po-team', color: '#FF0000', message: "RELEASE BUILD FAILED: <${env.BUILD_URL}|${env.JOB_NAME} [${env.BUILD_NUMBER}]>")
-//       }
-//       success {
-//         script {
-//           slackSend (channel: '#tobs-k8s-assist', color: '#008000', message: "Success!! `wavefront-kubernetes-adapter:${VERSION_NUMBER}` released!")
-//         }
-//       }
-//       always {
-//         cleanWs()
-//       }
-//     }
+    post {
+      // Notify only on null->failure or success->failure or any->success
+      failure {
+        script {
+          if(currentBuild.previousBuild == null) {
+            slackSend (channel: '#tobs-k8po-team', color: '#FF0000', message: "RELEASE BUILD FAILED: <${env.BUILD_URL}|${env.JOB_NAME} [${env.BUILD_NUMBER}]>")
+          }
+        }
+      }
+      regression {
+        slackSend (channel: '#tobs-k8po-team', color: '#FF0000', message: "RELEASE BUILD FAILED: <${env.BUILD_URL}|${env.JOB_NAME} [${env.BUILD_NUMBER}]>")
+      }
+      success {
+        script {
+          slackSend (channel: '#tobs-k8s-assist', color: '#008000', message: "Success!! `wavefront-kubernetes-adapter:${VERSION_NUMBER}` released!")
+        }
+      }
+      always {
+        cleanWs()
+      }
+    }
 }

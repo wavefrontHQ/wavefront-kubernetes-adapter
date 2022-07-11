@@ -30,7 +30,7 @@ pipeline {
             DOCKER_IMAGE = 'kubernetes-adapter'
           }
           steps {
-            sh 'echo $HARBOR_CREDS_PSW | docker login $PREFIX -u $HARBOR_CREDS_USR --password-stdin'
+            sh 'echo $HARBOR_CREDS_PSW | docker login $DOCKER_REPO -u $HARBOR_CREDS_USR --password-stdin'
             sh 'make publish'
           }
         }

@@ -44,7 +44,7 @@ container:
 		cp /etc/ssl/certs/ca-certificates.crt /build \
 		&& GOARCH=$(ARCH) CGO_ENABLED=0 go build -ldflags \"$(LDFLAGS)\" -a -tags netgo -o /build/$(BINARY_NAME) github.com/wavefronthq/wavefront-kubernetes-adapter/cmd/wavefront-adapter/"
 
-	cp Dockerfile $(TEMP_DIR)
+	cp deploy/Dockerfile $(TEMP_DIR)
 	docker build --pull -t $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) $(TEMP_DIR)
 	rm -rf $(TEMP_DIR)
 ifneq ($(OVERRIDE_IMAGE_NAME),)

@@ -14,12 +14,12 @@ pipeline {
   }
 
     parameters {
-        string(name: 'VERSION_NUMBER', defaultValue: '', description: 'The version number to release as')
+        string(name: 'VERSION', defaultValue: '', description: 'The version number to release as')
         string(name: 'TARGET_COMITISH', defaultValue: 'master', description: 'Specify a specific commit hash or branch to release the version to.')
         string(name: 'RELEASE_NOTES', defaultValue: '', description: 'The public release notes for the version. Use \\n to create newlines')
-        booleanParam(name: 'IS_DRAFT', defaultValue: false, description: 'If the release should be marked as a draft (unpublished)')
+        booleanParam(name: 'IS_DRAFT', defaultValue: true, description: 'If the release should be marked as a draft (unpublished)')
         booleanParam(name: 'IS_PRERELEASE', defaultValue: false, description: 'If the release should be marked as a prerelease')
-        booleanParam(name: 'createGithubRelease', defaultValue: true, description: 'Mark as false if you only want to build/push docker images. Note: a tag specified by the name VERSION_NUMBER must be created in the repo already for this option to be turned off')
+        booleanParam(name: 'createGithubRelease', defaultValue: true, description: 'Mark as false if you only want to build/push docker images. Note: a tag specified by the name VERSION must be created in the repo already for this option to be turned off')
     }
 
     stages {
@@ -35,16 +35,16 @@ pipeline {
           }
         }
 
-//         stage('Create Github Release') {
-//             steps {
-//                 script {
-//                     if (params.createGithubRelease) {
-//                         TARGET_COMITISH_TRIMMED = TARGET_COMITISH.minus("origin/")
-//                         sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION_NUMBER}\", \"target_commitish\": \"${TARGET_COMITISH_TRIMMED}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
-//                     }
-//                 }
-//             }
-//         }
+        stage('Create Github Release') {
+            steps {
+                script {
+                    if (params.createGithubRelease) {
+                        TARGET_COMITISH_TRIMMED = TARGET_COMITISH.minus("origin/")
+                        sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION}\", \"target_commitish\": \"${TARGET_COMITISH_TRIMMED}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
+                    }
+                }
+            }
+        }
     }
 
 //     post {
@@ -61,7 +61,7 @@ pipeline {
 //       }
 //       success {
 //         script {
-//           slackSend (channel: '#tobs-k8s-assist', color: '#008000', message: "Success!! `prometheus-storage-adapter:${VERSION_NUMBER}` released!")
+//           slackSend (channel: '#tobs-k8s-assist', color: '#008000', message: "Success!! `wavefront-kubernetes-adapter:${VERSION}` released!")
 //         }
 //       }
 //       always {

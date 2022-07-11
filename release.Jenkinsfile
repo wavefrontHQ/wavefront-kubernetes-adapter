@@ -23,7 +23,6 @@ pipeline {
     }
 
     stages {
-    stages {
         stage("Publish GA Harbor Image") {
           environment {
             HARBOR_CREDS = credentials("projects-registry-vmware-tanzu_observability-robot")

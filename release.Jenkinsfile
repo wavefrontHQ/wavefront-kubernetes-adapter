@@ -27,7 +27,7 @@ pipeline {
           environment {
             HARBOR_CREDS = credentials("projects-registry-vmware-tanzu_observability-robot")
             DOCKER_REPO = 'projects.registry.vmware.com/tanzu_observability'
-            DOCKER_IMAGE = 'kubernetes-adapter'
+            DOCKER_IMAGE = 'kubernetes-hpa-adapter'
           }
           steps {
             sh 'echo $HARBOR_CREDS_PSW | docker login $DOCKER_REPO -u $HARBOR_CREDS_USR --password-stdin'

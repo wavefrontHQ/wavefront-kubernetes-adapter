@@ -15,7 +15,7 @@ pipeline {
 
     parameters {
         string(name: 'VERSION_NUMBER', defaultValue: '', description: 'The version number to release as')
-        string(name: 'TARGET_COMITISH', defaultValue: 'master', description: 'Specify a specific commit hash or branch to release the version to.')
+        string(name: 'TARGET_COMMITISH', defaultValue: 'master', description: 'Specify a specific commit hash or branch to release the version to.')
         string(name: 'RELEASE_NOTES', defaultValue: '', description: 'The public release notes for the version. Use \\n to create newlines')
         booleanParam(name: 'IS_DRAFT', defaultValue: true, description: 'If the release should be marked as a draft (unpublished)')
         booleanParam(name: 'IS_PRERELEASE', defaultValue: false, description: 'If the release should be marked as a prerelease')
@@ -52,8 +52,8 @@ pipeline {
             steps {
                 script {
                     if (params.createGithubRelease) {
-                        TARGET_COMITISH_TRIMMED = TARGET_COMITISH.minus("origin/")
-                        sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION_NUMBER}\", \"target_commitish\": \"${TARGET_COMITISH_TRIMMED}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
+                        TARGET_COMMITISH_TRIMMED = TARGET_COMMITISH.minus("origin/")
+                        sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION_NUMBER}\", \"target_commitish\": \"${TARGET_COMMITISH_TRIMMED}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
                     }
                 }
             }

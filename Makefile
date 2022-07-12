@@ -30,7 +30,6 @@ fmt:
 
 .PHONY: build
 build:
-	echo $(GOOS)/$(GOARCH)/$(BINARY_NAME)
 	CGO_ENABLED=0 GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -a -tags netgo -o build/$(GOOS)/$(GOARCH)/$(BINARY_NAME) ./cmd/wavefront-adapter/
 
 

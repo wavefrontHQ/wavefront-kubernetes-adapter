@@ -10,7 +10,7 @@ pipeline {
       RELEASE_TYPE = 'release'
       GIT_CREDENTIAL_ID = 'wf-jenkins-github'
       GITHUB_TOKEN = credentials('GITHUB_TOKEN')
-      REPO_NAME = 'kubernetes-adapter'
+      REPO_NAME = 'wavefront-kubernetes-adapter'
   }
 
     parameters {

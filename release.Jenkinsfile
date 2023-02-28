@@ -23,6 +23,15 @@ pipeline {
     }
 
     stages {
+        stage("Upgrade Docker Engine") {
+          steps {
+            sh 'sudo apt-get remove docker docker-engine docker.io containerd runc'
+            sh 'sudo apt-get update'
+            sh 'sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin'
+            sh 'sudo docker run hello-world'
+          }
+        }
+
         stage("Publish GA Harbor Image") {
           environment {
             HARBOR_CREDS = credentials("projects-registry-vmware-tanzu_observability-robot")

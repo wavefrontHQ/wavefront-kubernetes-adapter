@@ -3,7 +3,7 @@ OUT_DIR?=./_output
 DOCKER_REPO?=wavefronthq
 DOCKER_IMAGE?=wavefront-hpa-adapter
 
-VERSION?=0.9.10
+VERSION?=0.9.11
 
 BINARY_NAME=wavefront-adapter
 GIT_COMMIT:=$(shell git rev-parse --short HEAD)

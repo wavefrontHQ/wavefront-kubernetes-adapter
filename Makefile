@@ -3,6 +3,11 @@ OUT_DIR?=./_output
 DOCKER_REPO?=wavefronthq
 DOCKER_IMAGE?=wavefront-hpa-adapter
 
+# Represents the upcoming version
+# whereas the current version is referenced in the
+# deploy/manifests/05-custom-metrics-apiserver-deployment.yaml file
+#
+# IMPORTANT: This is also overwritten by the release pipeline build with parameters
 VERSION?=0.9.11
 
 BINARY_NAME=wavefront-adapter

@@ -31,6 +31,7 @@ pipeline {
           }
           steps {
             sh 'echo $HARBOR_CREDS_PSW | docker login $DOCKER_REPO -u $HARBOR_CREDS_USR --password-stdin'
+            sh './scripts/install_docker_buildx.sh'
             sh 'make publish'
           }
         }
@@ -44,6 +45,7 @@ pipeline {
 
           steps {
             sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'
+            sh './scripts/install_docker_buildx.sh'
             sh 'make publish'
           }
         }

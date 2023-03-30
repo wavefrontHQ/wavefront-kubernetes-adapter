@@ -17,7 +17,7 @@ Usage:
   --log-level string                       One of info, debug, warn or trace (default is "info").
 ```
 
-## External Metrics Configuration file
+## External Metrics Configuration File
 
 Source: [config.go](/pkg/config/config.go)
 

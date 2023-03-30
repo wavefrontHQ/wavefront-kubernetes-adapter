@@ -2,14 +2,14 @@
 
 This HPA adapter can be used to horizontally autoscale your Kubernetes Pods based on metrics available within Operations for Applications.
 
-By default the Kubernetes HorizontalPodAutoscaler controller fetches metrics from a series of [APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis). This adapter implements the APIs detailed below.
+By default, the Kubernetes HorizontalPodAutoscaler controller fetches metrics from a series of [APIs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis). This adapter implements the APIs detailed below.
 
 ## custom.metrics.k8s.io
 For the custom metrics API, this adapter provides all Kubernetes metrics collected using the Operations for Applications [Kubernetes Metrics Collector](https://github.com/wavefrontHQ/observability-for-kubernetes/blob/main/docs/collector/collector.md).
 
 This can be configured using the `wavefront-metric-prefix` adapter property. See [metrics.md](/docs/metrics.md) for the list of metrics provided through this API.
 
-Use the external metrics API detailed below if you wish to use non-Kubernetes metrics or Kubernetes metrics collected using a different mechanism than the Operations for Applications Kubernetes Metrics Collector.
+Use the external metrics API described below if you want to use non-Kubernetes metrics or Kubernetes metrics collected using a different mechanism than the Operations for Applications Kubernetes Metrics Collector.
 
 ## external.metrics.k8s.io
 The external metrics API allows you to autoscale on any arbitrary metric available in Operations for Applications.
@@ -43,12 +43,12 @@ spec:
 ```
 **Note:** The external metric names should be globally unique.
 
-### Static configuration file
+### Static Configuration File
 To specify external metrics via a configuration file:
 
-1. Deploy a Kubernetes [ConfigMap](/deploy/manifests/04-custom-metrics-config-map.yaml) listing the metrics you wish to autoscale on.
+1. Deploy a Kubernetes [ConfigMap](/deploy/manifests/04-custom-metrics-config-map.yaml) listing the metrics you want to autoscale on.
 2. Configure the [`external-metrics-config`](/deploy/manifests/05-custom-metrics-apiserver-deployment.yaml#L33) adapter property based on the ConfigMap and redeploy the adapter.
-3. Deploy a [HPA](/deploy/hpa-examples/hpa-external.yaml) based on an external metric.
+3. Deploy an [HPA](/deploy/hpa-examples/hpa-external.yaml) based on an external metric.
 
 ## Kubernetes HPA Spec
 Refer to the [autoscaling spec](https://pkg.go.dev/k8s.io/api/autoscaling/v2beta1#MetricSpec) for more details on configuring HPAs based on the custom or external metrics APIs.

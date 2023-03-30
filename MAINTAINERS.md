@@ -1,4 +1,4 @@
-# Wavefront HPA Adapter for Kubernetes Maintainers
+# Operations for Applications HPA Adapter for Kubernetes Maintainers
 
 ## Maintainers
 

@@ -1,21 +1,21 @@
-# Wavefront HPA Adapter for Kubernetes
+# Operations for Applications HPA Adapter for Kubernetes
 [![build status][ci-img]][ci] [![Go Report Card][go-report-img]][go-report] [![Docker Pulls][docker-pull-img]][docker-img]
 
-[Wavefront](https://docs.wavefront.com) is a high-performance streaming analytics platform for monitoring and optimizing your environment and applications.
+[VMware Aria Operations for Applications](https://docs.wavefront.com) is a high-performance streaming analytics platform for monitoring and optimizing your environment and applications.
 
-The Wavefront HPA (Horizontal Pod Autoscaler) adapter for Kubernetes implements the Kubernetes **custom.metrics.k8s.io/v1beta1** and **external.metrics.k8s.io/v1beta1** APIs allowing you to autoscale pods based on metrics available within Wavefront.
+The Operations for Applications HPA (Horizontal Pod Autoscaler) adapter for Kubernetes implements the Kubernetes `custom.metrics.k8s.io/v1beta1` and `external.metrics.k8s.io/v1beta1` APIs allowing you to autoscale pods based on metrics available within Operations for Applications.
 
 ## Prerequisites
 
 - Kubernetes 1.9+
-- The [aggregation layer](https://kubernetes.io/docs/tasks/access-kubernetes-api/configure-aggregation-layer/) needs to be enabled in your Kubernetes cluster prior to deploying the Wavefront adapter.
+- The [aggregation layer](https://kubernetes.io/docs/tasks/access-kubernetes-api/configure-aggregation-layer/) needs to be enabled in your Kubernetes cluster prior to deploying the Operations for Applications HPA adapter.
 
 ## Getting Started
-Refer the [Getting Started](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/docs/introduction.md) guide for an overview of the functionality provided by this adapter.
+Refer to the [Getting Started](/docs/introduction.md) guide for an overview of the functionality provided by this adapter.
 
 ## Configuration
 
-Refer the [documentation](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/blob/master/docs/configuration.md) for detailed configuration options.
+Refer to the [Configuration](/docs/configuration.md) documentation for detailed configuration options.
 
 ## Installation
 
@@ -82,12 +82,12 @@ You can similarly run `kubectl get --raw "/apis/external.metrics.k8s.io/v1beta1"
 
 ## HPA Autoscaling
 
-See the sample configurations under [hpa-examples](https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/tree/master/deploy/hpa-examples) on how to autoscale deployments based on metrics under the custom or external metrics APIs.
+See the sample configurations under [hpa-examples](/deploy/hpa-examples/) on how to autoscale deployments based on metrics under the custom or external metrics APIs.
 
 Run `kubectl describe hpa example-hpa-custom-metrics` to verify the autoscaling works.
 
-[ci-img]: https://travis-ci.com/wavefrontHQ/wavefront-kubernetes-adapter.svg?branch=master
-[ci]: https://travis-ci.com/wavefrontHQ/wavefront-kubernetes-adapter
+[ci-img]: https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/actions/workflows/go.yml/badge.svg
+[ci]: https://github.com/wavefrontHQ/wavefront-kubernetes-adapter/actions/workflows/go.yml
 [go-report-img]: https://goreportcard.com/badge/github.com/wavefronthq/wavefront-kubernetes-adapter
 [go-report]: https://goreportcard.com/report/github.com/wavefronthq/wavefront-kubernetes-adapter
 [docker-pull-img]: https://img.shields.io/docker/pulls/wavefronthq/wavefront-hpa-adapter.svg?logo=docker

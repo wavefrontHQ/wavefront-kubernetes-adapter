@@ -109,18 +109,18 @@ func main() {
 	cmd.Name = "wavefront-custom-metrics-adapter"
 	flags := cmd.Flags()
 	flags.DurationVar(&cmd.MetricsRelistInterval, "metrics-relist-interval", cmd.MetricsRelistInterval, ""+
-		"interval at which to fetch the list of all available metrics from Wavefront")
+		"Interval at which to fetch the list of custom metric names from Operations for Applications.")
 	flags.DurationVar(&cmd.APIClientTimeout, "api-client-timeout", cmd.APIClientTimeout, ""+
-		"Wavefront client timeout")
+		"Client timeout to Operations for Applications.")
 	flags.StringVar(&cmd.WavefrontServerURL, "wavefront-url", "",
-		"Wavefront url of the form https://INSTANCE.wavefront.com")
+		"Wavefront URL in the format https://YOUR_INSTANCE.wavefront.com")
 	flags.StringVar(&cmd.WavefrontAPIToken, "wavefront-token", "",
-		"Wavefront API token with permissions to query for points")
+		"Wavefront API token with permissions to query for points.")
 	flags.StringVar(&cmd.CustomMetricPrefix, "wavefront-metric-prefix", cmd.CustomMetricPrefix,
-		"Wavefront Kubernetes Metrics Prefix")
+		"Metrics under this prefix are exposed in the custom metrics API.")
 	flags.StringVar(&cmd.AdapterConfigFile, "external-metrics-config", "",
-		"Configuration file for driving external metrics API")
-	flags.StringVar(&cmd.LogLevel, "log-level", "info", "one of info, debug or trace")
+		"Configuration file for driving external metrics API.")
+	flags.StringVar(&cmd.LogLevel, "log-level", "info", "One of info, debug or trace.")
 	flags.StringVar(&cmd.Message, "msg", "starting wavefront adapter", "startup message")
 	flags.AddGoFlagSet(flag.CommandLine) // make sure we get the glog flags
 	flags.Parse(os.Args)

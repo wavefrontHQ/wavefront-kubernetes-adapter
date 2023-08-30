@@ -114,8 +114,14 @@ func main() {
 		"Client timeout to Operations for Applications.")
 	flags.StringVar(&cmd.WavefrontServerURL, "wavefront-url", "",
 		"Wavefront URL in the format https://YOUR_INSTANCE.wavefront.com")
+		if wavefrontUrl := os.Getenv("WAVEFRONT_URL"); wavefrontUrl != "" {
+			WavefrontServerURL = wavefrontUrl
+		}
 	flags.StringVar(&cmd.WavefrontAPIToken, "wavefront-token", "",
 		"Wavefront API token with permissions to query for points.")
+		if wavefrontToken := os.Getenv("WAVEFRONT_TOKEN"); wavefrontToken != "" {
+			WavefrontAPIToken = wavefrontToken
+		}
 	flags.StringVar(&cmd.CustomMetricPrefix, "wavefront-metric-prefix", cmd.CustomMetricPrefix,
 		"Metrics under this prefix are exposed in the custom metrics API.")
 	flags.StringVar(&cmd.AdapterConfigFile, "external-metrics-config", "",

@@ -76,7 +76,7 @@ pipeline {
       }
       success {
         script {
-          slackSend (channel: '#tobs-k8s-assist', color: '#008000', message: "Success!! `wavefront-kubernetes-adapter:${VERSION_NUMBER}` released!")
+          slackSend (channel: '#tobs-k8po-team', color: '#008000', message: "Success!! `wavefront-kubernetes-adapter:${VERSION_NUMBER}` released!")
         }
       }
       always {

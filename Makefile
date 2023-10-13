@@ -73,5 +73,5 @@ update-version:
 	git add Makefile
 	git add release/VERSION
 	git add deploy/manifests/05-custom-metrics-apiserver-deployment.yaml
-	git commit -m "Bump Wavefront HPA Adapter version to $(NEW_VERSION)"
+	git commit -m "Bump version to $(NEW_VERSION)"
 	git push --set-upstream origin bump-version-$(NEW_VERSION)

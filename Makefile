@@ -71,6 +71,7 @@ branch:
 update-version:
 	@if [ -z "$(NEW_VERSION)" ]; then echo "Need to set NEW_VERSION" && exit 1; fi
 	git add Makefile
+	git add release/VERSION
 	git add deploy/manifests/05-custom-metrics-apiserver-deployment.yaml
 	git commit -m "Bump Wavefront HPA Adapter version to $(NEW_VERSION)"
 	git push --set-upstream origin bump-version-$(NEW_VERSION)

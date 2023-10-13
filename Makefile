@@ -8,7 +8,7 @@ DOCKER_IMAGE?=wavefront-hpa-adapter
 # deploy/manifests/05-custom-metrics-apiserver-deployment.yaml file
 #
 # IMPORTANT: This is also overwritten by the release pipeline build with parameters
-VERSION?=0.9.13
+VERSION?=0.10.1
 
 BINARY_NAME=wavefront-adapter
 GIT_COMMIT:=$(shell git rev-parse --short HEAD)

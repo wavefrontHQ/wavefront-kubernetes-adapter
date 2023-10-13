@@ -32,8 +32,9 @@ pipeline {
                 sh 'git remote set-url origin https://${GITHUB_TOKEN}@github.com/wavefronthq/${REPO_NAME}.git'
                 sh 'CGO_ENABLED=0 go install github.com/davidrjonas/semver-cli@latest'
                 sh './scripts/update_release_version.sh -v $(cat release/VERSION) -s ${BUMP_COMPONENT}'
+                sh 'git branch --delete --force bump-version-$(cat release/VERSION) &>/dev/null || true'
                 sh 'git checkout -b bump-version-$(cat release/VERSION)'
-                sh 'make update-version VERSION=$(cat release/VERSION)'
+                sh 'make update-version NEW_VERSION=$(cat release/VERSION)'
                 sh '''
                     VERSION_NUMBER=$(cat release/VERSION)
                     curl -X POST \

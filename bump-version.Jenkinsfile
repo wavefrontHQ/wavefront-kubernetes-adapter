@@ -21,12 +21,16 @@ pipeline {
         }
 
         stage('Create Bump Version PR') {
+            environment {
+                BUMP_COMPONENT = "${params.BUMP_COMPONENT}"
+            }
+
             steps {
                 sh 'git config --global user.email "svc.wf-jenkins@vmware.com"'
                 sh 'git config --global user.name "svc.wf-jenkins"'
-                sh 'git remote set-url origin https://$GITHUB_CREDS_PSW@github.com/wavefronthq/${REPO_NAME}.git'
+                sh 'git remote set-url origin https://${GITHUB_CREDS_PSW}@github.com/wavefronthq/${REPO_NAME}.git'
                 sh 'CGO_ENABLED=0 go install github.com/davidrjonas/semver-cli@latest'
-                sh './scripts/update_release_version.sh -v $(cat release/VERSION) -s ${params.BUMP_COMPONENT}'
+                sh './scripts/update_release_version.sh -v $(cat release/VERSION) -s ${BUMP_COMPONENT}'
                 sh 'git checkout -b bump-version-$(cat release/VERSION)'
                 sh 'make update-version VERSION=$(cat release/VERSION)'
                 sh '''

@@ -2,7 +2,6 @@
 set -e
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
-cd "${REPO_ROOT}"
 
 function get_bumped_version() {
   local version="$1"
@@ -29,6 +28,8 @@ function print_usage_and_exit() {
 }
 
 function main() {
+  cd "${REPO_ROOT}"
+
   local VERSION=''
   local BUMP_COMPONENT=''
   local NEXT_RELEASE_VERSION=''

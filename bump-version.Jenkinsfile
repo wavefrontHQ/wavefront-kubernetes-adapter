@@ -4,6 +4,7 @@ pipeline {
     tools { go 'Go 1.18' }
 
     environment {
+        PATH = "${env.WORKSPACE}/bin:${env.HOME}/go/bin:${env.PATH}"
         GIT_CREDENTIAL_ID = 'wf-jenkins-github'
         GITHUB_TOKEN = credentials('GITHUB_TOKEN')
         REPO_NAME = 'wavefront-kubernetes-adapter'
@@ -28,7 +29,7 @@ pipeline {
             steps {
                 sh 'git config --global user.email "svc.wf-jenkins@vmware.com"'
                 sh 'git config --global user.name "svc.wf-jenkins"'
-                sh 'git remote set-url origin https://${GITHUB_CREDS_PSW}@github.com/wavefronthq/${REPO_NAME}.git'
+                sh 'git remote set-url origin https://${GITHUB_TOKEN}@github.com/wavefronthq/${REPO_NAME}.git'
                 sh 'CGO_ENABLED=0 go install github.com/davidrjonas/semver-cli@latest'
                 sh './scripts/update_release_version.sh -v $(cat release/VERSION) -s ${BUMP_COMPONENT}'
                 sh 'git checkout -b bump-version-$(cat release/VERSION)'

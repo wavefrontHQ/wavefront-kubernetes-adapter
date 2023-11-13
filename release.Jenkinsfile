@@ -28,6 +28,7 @@ pipeline {
             HARBOR_CREDS = credentials("projects-registry-vmware-tanzu_observability-robot")
             DOCKER_REPO = 'projects.registry.vmware.com/tanzu_observability'
             DOCKER_IMAGE = 'kubernetes-hpa-adapter'
+            VERSION = "${params.VERSION_NUMBER}"
           }
           steps {
             sh 'echo $HARBOR_CREDS_PSW | docker login $DOCKER_REPO -u $HARBOR_CREDS_USR --password-stdin'
@@ -41,6 +42,7 @@ pipeline {
             DOCKERHUB_CREDS=credentials('Dockerhub_svcwfjenkins')
             DOCKER_REPO = 'wavefronthq'
             DOCKER_IMAGE = 'wavefront-hpa-adapter'
+            VERSION = "${params.VERSION_NUMBER}"
           }
 
           steps {
@@ -55,7 +57,7 @@ pipeline {
                 script {
                     if (params.createGithubRelease) {
                         TARGET_COMMITISH_TRIMMED = TARGET_COMMITISH.minus("origin/")
-                        sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION_NUMBER}\", \"target_commitish\": \"${TARGET_COMMITISH_TRIMMED}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
+                        sh "curl -XPOST -H \"Authorization: token ${GITHUB_TOKEN}\" -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/wavefrontHQ/${REPO_NAME}/releases -d \'{\"tag_name\": \"${VERSION_NUMBER}\", \"target_commitish\": \"${TARGET_COMMITISH_TRIMMED}\", \"name\": \"Release v${VERSION_NUMBER}\", \"body\": \"${RELEASE_NOTES}\", \"draft\": ${IS_DRAFT}, \"prerelease\": ${IS_PRERELEASE}}\'"
                     }
                 }
             }

@@ -43,7 +43,7 @@ func (l *hpaListener) listen() {
 
 	rc := l.kubeClient.AutoscalingV2beta1().RESTClient()
 	lw := cache.NewListWatchFromClient(rc, "horizontalpodautoscalers", v1.NamespaceAll, fields.Everything())
-	inf := cache.NewSharedInformer(lw, &v2beta1.HorizontalPodAutoscaler{}, 0)
+	inf := cache.NewSharedInformer(lw, &v2beta2.HorizontalPodAutoscaler{}, 0)
 
 	inf.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {

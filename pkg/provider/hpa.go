@@ -41,7 +41,7 @@ func StartHPAListener(client kubernetes.Interface, addFunc, deleteFunc RuleHandl
 func (l *hpaListener) listen() {
 	log.Info("listening for HPA instances")
 
-	rc := l.kubeClient.AutoscalingV2beta1().RESTClient()
+	rc := l.kubeClient.AutoscalingV2beta2().RESTClient()
 	lw := cache.NewListWatchFromClient(rc, "horizontalpodautoscalers", v1.NamespaceAll, fields.Everything())
 	inf := cache.NewSharedInformer(lw, &v2beta2.HorizontalPodAutoscaler{}, 0)
 

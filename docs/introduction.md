@@ -22,7 +22,7 @@ Metrics can be specified via annotations on HPAs or via a static configuration f
 The adapter can dynamically discover HPAs and source external metrics via annotations. The annotations should be of the form `wavefront.com.external.metric/<metric_name>: '<ts query>'`. For example:
 
 ```yaml
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: example-app
@@ -51,4 +51,4 @@ To specify external metrics via a configuration file:
 3. Deploy an [HPA](/deploy/hpa-examples/hpa-external.yaml) based on an external metric.
 
 ## Kubernetes HPA Spec
-Refer to the [autoscaling spec](https://pkg.go.dev/k8s.io/api/autoscaling/v2beta1#MetricSpec) for more details on configuring HPAs based on the custom or external metrics APIs.
+Refer to the [autoscaling spec](https://pkg.go.dev/k8s.io/api/autoscaling/v2beta2#MetricSpec) for more details on configuring HPAs based on the custom or external metrics APIs.

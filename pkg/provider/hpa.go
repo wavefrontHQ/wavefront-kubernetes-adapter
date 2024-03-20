@@ -4,6 +4,7 @@
 package provider
 
 import (
+	"k8s.io/api/autoscaling/v2beta2"
 	"reflect"
 	"strings"
 
@@ -46,15 +47,15 @@ func (l *hpaListener) listen() {
 
 	inf.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			hpa := obj.(*v2beta1.HorizontalPodAutoscaler)
+			hpa := obj.(*v2beta2.HorizontalPodAutoscaler)
 			rules := rulesFromAnnotations(hpa.Annotations)
 			if len(rules) > 0 {
 				l.addFunc(rules)
 			}
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
-			oldHPA := oldObj.(*v2beta1.HorizontalPodAutoscaler)
-			newHPA := newObj.(*v2beta1.HorizontalPodAutoscaler)
+			oldHPA := oldObj.(*v2beta2.HorizontalPodAutoscaler)
+			newHPA := newObj.(*v2beta2.HorizontalPodAutoscaler)
 
 			// HPA objects are updated frequently when status changes
 			// validate if annotations have changed
@@ -73,7 +74,7 @@ func (l *hpaListener) listen() {
 			}
 		},
 		DeleteFunc: func(obj interface{}) {
-			hpa := obj.(*v2beta1.HorizontalPodAutoscaler)
+			hpa := obj.(*v2beta2.HorizontalPodAutoscaler)
 			rules := rulesFromAnnotations(hpa.Annotations)
 			if len(rules) > 0 {
 				l.deleteFunc(rules)

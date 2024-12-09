@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: example-hpa-custom-metrics
@@ -8,8 +8,14 @@ spec:
   metrics:
   - type: External
     external:
-      metricName: azure.vm.cpu
-      targetAverageValue: 1800m
+      metric:
+        name: azure.vm.cpu
+        selector:
+          matchLabels:
+            queue: "azure.vm.cpu"
+      target:
+        type: AverageValue
+        averageValue: "30"
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment

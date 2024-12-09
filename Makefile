@@ -8,7 +8,7 @@ DOCKER_IMAGE?=wavefront-hpa-adapter
 # deploy/manifests/05-custom-metrics-apiserver-deployment.yaml file
 #
 # IMPORTANT: This is also overwritten by the release pipeline build with parameters
-VERSION?=0.9.15
+VERSION?=0.9.16
 
 BINARY_NAME=wavefront-adapter
 GIT_COMMIT:=$(shell git rev-parse --short HEAD)
@@ -51,9 +51,8 @@ BUILDER_SUFFIX=$(shell echo $(PREFIX) | cut -d '/' -f1)
 .PHONY: publish
 publish:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 make build -o fmt -o vet
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 make build -o fmt -o vet
 	docker buildx create --use --node wavefront_k8s_adapter_builder_$(BUILDER_SUFFIX)
-	docker buildx build --platform linux/amd64,linux/arm64 --push --pull -t $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) -t $(DOCKER_REPO)/$(DOCKER_IMAGE):latest -f Dockerfile build
+	docker buildx build --platform linux/amd64 --pull -t $(DOCKER_REPO)/$(DOCKER_IMAGE):$(VERSION) -t $(DOCKER_REPO)/$(DOCKER_IMAGE):latest -f Dockerfile build
 
 .PHONY: clean
 clean:

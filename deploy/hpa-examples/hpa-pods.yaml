@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: example-hpa-custom-metrics
@@ -8,8 +8,11 @@ spec:
   metrics:
   - type: Pods
     pods:
-      metricName: cpu.request
-      targetAverageValue: 1800m
+      metric:
+        name: cpu-request
+      target:
+        type: AverageValue
+        averageValue: 1k
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment

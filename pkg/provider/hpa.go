@@ -4,19 +4,16 @@
 package provider
 
 import (
-	"k8s.io/api/autoscaling/v2beta2"
-	"reflect"
-	"strings"
-
 	log "github.com/sirupsen/logrus"
-
 	"github.com/wavefronthq/wavefront-kubernetes-adapter/pkg/config"
-
+	"k8s.io/api/autoscaling/v2"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
+	"reflect"
+	"strings"
 )
 
 const (
@@ -41,21 +38,21 @@ func StartHPAListener(client kubernetes.Interface, addFunc, deleteFunc RuleHandl
 func (l *hpaListener) listen() {
 	log.Info("listening for HPA instances")
 
-	rc := l.kubeClient.AutoscalingV2beta2().RESTClient()
+	rc := l.kubeClient.AutoscalingV2().RESTClient()
 	lw := cache.NewListWatchFromClient(rc, "horizontalpodautoscalers", v1.NamespaceAll, fields.Everything())
-	inf := cache.NewSharedInformer(lw, &v2beta2.HorizontalPodAutoscaler{}, 0)
+	inf := cache.NewSharedInformer(lw, &v2.HorizontalPodAutoscaler{}, 0)
 
 	inf.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			hpa := obj.(*v2beta2.HorizontalPodAutoscaler)
+			hpa := obj.(*v2.HorizontalPodAutoscaler)
 			rules := rulesFromAnnotations(hpa.Annotations)
 			if len(rules) > 0 {
 				l.addFunc(rules)
 			}
 		},
 		UpdateFunc: func(oldObj, newObj interface{}) {
-			oldHPA := oldObj.(*v2beta2.HorizontalPodAutoscaler)
-			newHPA := newObj.(*v2beta2.HorizontalPodAutoscaler)
+			oldHPA := oldObj.(*v2.HorizontalPodAutoscaler)
+			newHPA := newObj.(*v2.HorizontalPodAutoscaler)
 
 			// HPA objects are updated frequently when status changes
 			// validate if annotations have changed
@@ -74,7 +71,7 @@ func (l *hpaListener) listen() {
 			}
 		},
 		DeleteFunc: func(obj interface{}) {
-			hpa := obj.(*v2beta2.HorizontalPodAutoscaler)
+			hpa := obj.(*v2.HorizontalPodAutoscaler)
 			rules := rulesFromAnnotations(hpa.Annotations)
 			if len(rules) > 0 {
 				l.deleteFunc(rules)

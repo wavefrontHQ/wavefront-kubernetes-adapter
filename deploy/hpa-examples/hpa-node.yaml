@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: example-hpa-custom-metrics
@@ -10,10 +10,14 @@ spec:
   minReplicas: 1
   maxReplicas: 5
   metrics:
-  - type: Object
-    object:
-      target:
-        kind: Node
-        name: gke-cluster-default-pool-f63db08a-xrdh
-      metricName: cpu.usage_rate
-      targetValue: 2000m
+    - type: Object
+      object:
+        metric:
+          name: cpu.usage_rate
+        describedObject:
+          apiVersion: networking.k8s.io/v1
+          kind: Node
+          name: gke-cluster-default-pool-f63db08a-xrdh
+        target:
+          type: Value
+          value: 2k

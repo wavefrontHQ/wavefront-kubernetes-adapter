@@ -3,7 +3,7 @@
 
 [VMware Aria Operations for Applications](https://docs.wavefront.com) is a high-performance streaming analytics platform for monitoring and optimizing your environment and applications.
 
-The Operations for Applications HPA (Horizontal Pod Autoscaler) adapter for Kubernetes implements the Kubernetes `custom.metrics.k8s.io/v1beta1` and `external.metrics.k8s.io/v1beta1` APIs allowing you to autoscale pods based on metrics available within Operations for Applications.
+The Operations for Applications HPA (Horizontal Pod Autoscaler) adapter for Kubernetes implements the Kubernetes `k8s.io/api/autoscaling/v2` APIs allowing you to autoscale pods based on metrics available within Operations for Applications.
 
 ## Prerequisites
 

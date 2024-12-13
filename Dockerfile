@@ -3,4 +3,4 @@ ARG BUILDPLATFORM
 
 WORKDIR /
 COPY $BUILDPLATFORM .
-ENTRYPOINT ["/wavefront-adapter", "--logtostderr=true"]
+ENTRYPOINT ["/wavefront-adapter"]

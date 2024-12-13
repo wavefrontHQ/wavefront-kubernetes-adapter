@@ -31,7 +31,6 @@ spec:
         - --secure-port=6443
         - --metrics-relist-interval=15m
         - --external-metrics-config=/etc/adapter/config.yaml
-        - --logtostderr=true
         ports:
         - containerPort: 6443
         volumeMounts:

@@ -5,3 +5,8 @@ notes.txt
 apiserver.*
 docker-push.sh
 cmd/wavefront-query
+.DS_Store
+.zshrc
+cmd/.DS_Store
+deploy/.DS_Store
+go/
